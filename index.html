@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hành Trình Bắc Bộ 2026 — Cổng Thiết Kế Lộ Trình</title>
+    <title>Hành Trình Bắc Bộ 2026 — Thiết Kế Lộ Trình</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -19,31 +19,13 @@
 
     <style>
       :root {
-        --bg-canvas: #f6f5f0;
         --ink-primary: #141413;
-        --ink-secondary: #575652;
-        --ink-muted: #8c8b85;
+        --ink-secondary: #5a5955;
+        --ink-muted: #8e8d87;
       }
 
       body {
-        background-color: var(--bg-canvas);
-        background-image:
-          radial-gradient(
-            at 15% 10%,
-            rgba(212, 228, 220, 0.45) 0px,
-            transparent 50%
-          ),
-          radial-gradient(
-            at 85% 25%,
-            rgba(238, 225, 209, 0.4) 0px,
-            transparent 50%
-          ),
-          radial-gradient(
-            at 50% 80%,
-            rgba(219, 228, 238, 0.35) 0px,
-            transparent 55%
-          );
-        background-attachment: fixed;
+        background-color: #f4f3ef;
         color: var(--ink-primary);
         font-family:
           "Plus Jakarta Sans",
@@ -51,6 +33,36 @@
           BlinkMacSystemFont,
           sans-serif;
         -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      /* Nền ánh sáng khuếch tán giúp tôn lên độ trong suốt của lớp kính iOS 27 */
+      .ambient-canvas {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 12% 18%,
+            rgba(196, 219, 210, 0.55) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 88% 22%,
+            rgba(235, 216, 196, 0.55) 0%,
+            transparent 48%
+          ),
+          radial-gradient(
+            circle at 75% 78%,
+            rgba(204, 218, 235, 0.5) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 22% 82%,
+            rgba(228, 214, 232, 0.45) 0%,
+            transparent 45%
+          ),
+          #f5f4f0;
       }
 
       .font-serif-display {
@@ -61,66 +73,90 @@
         font-variant-numeric: tabular-nums;
       }
 
-      /* Hiệu ứng Liquid Glass (iOS 27 Inspired) */
+      /* Hiệu ứng Kính Trong Suốt (Ultra-Pure Liquid Glass) */
       .liquid-glass {
-        background: rgba(255, 255, 255, 0.78);
-        backdrop-filter: blur(28px) saturate(180%);
-        -webkit-backdrop-filter: blur(28px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.92);
+        background: rgba(255, 255, 255, 0.44);
+        backdrop-filter: blur(42px) saturate(190%);
+        -webkit-backdrop-filter: blur(42px) saturate(190%);
+        border: 1px solid rgba(255, 255, 255, 0.85);
         box-shadow:
-          0 20px 45px -15px rgba(20, 20, 19, 0.06),
-          0 4px 12px -2px rgba(20, 20, 19, 0.03),
-          inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+          0 24px 60px -15px rgba(20, 20, 19, 0.05),
+          0 4px 16px -4px rgba(20, 20, 19, 0.02),
+          inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
       }
 
       .liquid-pill-nav {
-        background: rgba(255, 255, 255, 0.72);
-        backdrop-filter: blur(24px) saturate(190%);
-        -webkit-backdrop-filter: blur(24px) saturate(190%);
-        border: 1px solid rgba(20, 20, 19, 0.08);
-        box-shadow: 0 12px 32px -8px rgba(20, 20, 19, 0.08);
+        background: rgba(255, 255, 255, 0.52);
+        backdrop-filter: blur(36px) saturate(200%);
+        -webkit-backdrop-filter: blur(36px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        box-shadow:
+          0 16px 40px -10px rgba(20, 20, 19, 0.06),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
       }
 
-      /* Thẻ chọn Module tương tác */
+      /* Thẻ chọn Module siêu trong suốt */
       .module-card {
-        background: rgba(255, 255, 255, 0.72);
-        border: 1.5px solid rgba(20, 20, 19, 0.07);
-        border-radius: 28px;
-        transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-        box-shadow: 0 8px 24px -6px rgba(20, 20, 19, 0.03);
+        background: rgba(255, 255, 255, 0.38);
+        backdrop-filter: blur(36px) saturate(180%);
+        -webkit-backdrop-filter: blur(36px) saturate(180%);
+        border: 1.5px solid rgba(255, 255, 255, 0.8);
+        border-radius: 32px;
+        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow:
+          0 12px 32px -8px rgba(20, 20, 19, 0.03),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
       }
       .module-card:hover {
-        background: rgba(255, 255, 255, 0.94);
-        transform: translateY(-2px);
-        box-shadow: 0 18px 36px -10px rgba(20, 20, 19, 0.07);
+        background: rgba(255, 255, 255, 0.58);
+        transform: translateY(-3px);
+        border-color: rgba(255, 255, 255, 1);
+        box-shadow: 0 24px 48px -12px rgba(20, 20, 19, 0.07);
       }
       .module-card.active-card {
-        background: #ffffff;
+        background: rgba(255, 255, 255, 0.72);
+        border-color: rgba(20, 20, 19, 0.45);
+        box-shadow:
+          0 28px 56px -14px rgba(20, 20, 19, 0.09),
+          inset 0 1px 0 0 rgba(255, 255, 255, 1);
+      }
+
+      /* Ô nhập liệu trong suốt */
+      .glass-input {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        box-shadow: inset 0 2px 4px rgba(20, 20, 19, 0.02);
+        transition: all 0.25s ease;
+      }
+      .glass-input:focus {
+        background: rgba(255, 255, 255, 0.88);
         border-color: #141413;
-        box-shadow: 0 20px 40px -12px rgba(20, 20, 19, 0.1);
+        outline: none;
       }
 
       /* Công tắc gạt chuẩn iOS */
       .ios-switch {
         position: relative;
-        width: 52px;
-        height: 30px;
-        background: #e2e1dc;
+        width: 54px;
+        height: 32px;
+        background: rgba(20, 20, 19, 0.12);
         border-radius: 999px;
-        transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         flex-shrink: 0;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
       }
       .ios-switch::after {
         content: "";
         position: absolute;
         top: 3px;
         left: 3px;
-        width: 24px;
-        height: 24px;
+        width: 26px;
+        height: 26px;
         background: #ffffff;
         border-radius: 50%;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       }
       input:checked + .ios-switch {
         background: #141413;
@@ -129,80 +165,90 @@
         transform: translateX(22px);
       }
 
-      /* Nút bấm chính (Tactile CTA Button) */
+      /* Nút bấm chính nổi bật (Tactile Pill CTA) */
       .btn-luxury {
-        background: linear-gradient(180deg, #232321 0%, #141413 100%);
+        background: linear-gradient(180deg, #262624 0%, #121211 100%);
         color: #ffffff;
         border-radius: 9999px;
         box-shadow:
-          0 14px 28px -8px rgba(20, 20, 19, 0.35),
-          inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
-        transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+          0 16px 32px -8px rgba(20, 20, 19, 0.32),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+        transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .btn-luxury:hover {
-        background: linear-gradient(180deg, #2e2e2b 0%, #1c1c1a 100%);
+        background: linear-gradient(180deg, #32322f 0%, #1a1a18 100%);
         transform: translateY(-2px);
         box-shadow:
-          0 20px 34px -8px rgba(20, 20, 19, 0.42),
-          inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+          0 22px 40px -8px rgba(20, 20, 19, 0.4),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
       }
       .btn-luxury:active {
         transform: translateY(0) scale(0.985);
       }
 
-      /* Tùy chỉnh Bản đồ & Popup sang trọng */
+      /* Bản đồ & Popup trong suốt */
       .leaflet-container {
-        background: #eae8e1;
+        background: #eceae4;
         font-family: "Plus Jakarta Sans", sans-serif;
       }
+      .esri-clean-filter {
+        filter: saturate(75%) contrast(98%) brightness(102%);
+      }
       .leaflet-popup-content-wrapper {
-        background: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(16px);
+        background: rgba(255, 255, 255, 0.88) !important;
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
         color: #141413 !important;
-        border-radius: 24px !important;
+        border-radius: 26px !important;
         padding: 0 !important;
         overflow: hidden;
-        border: 1px solid rgba(20, 20, 19, 0.08);
-        box-shadow: 0 24px 48px -12px rgba(20, 20, 19, 0.18) !important;
+        border: 1px solid rgba(255, 255, 255, 0.95);
+        box-shadow: 0 28px 56px -12px rgba(20, 20, 19, 0.2) !important;
       }
       .leaflet-popup-content {
         margin: 0 !important;
-        width: 300px !important;
+        width: 310px !important;
       }
       .leaflet-popup-tip {
-        background: rgba(255, 255, 255, 0.95) !important;
+        background: rgba(255, 255, 255, 0.88) !important;
       }
       .leaflet-container a.leaflet-popup-close-button {
         color: #141413 !important;
         background: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(10px);
         border-radius: 50%;
-        width: 30px !important;
-        height: 30px !important;
+        width: 32px !important;
+        height: 32px !important;
         top: 12px !important;
         right: 12px !important;
-        line-height: 28px !important;
+        line-height: 30px !important;
         font-weight: 600;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
       }
       .leaflet-control-layers {
-        border-radius: 16px !important;
-        border: 1px solid rgba(20, 20, 19, 0.08) !important;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
-        padding: 6px 10px !important;
+        background: rgba(255, 255, 255, 0.82) !important;
+        backdrop-filter: blur(20px) !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.9) !important;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08) !important;
+        padding: 8px 14px !important;
         font-size: 13px !important;
+        color: #141413 !important;
       }
     </style>
   </head>
   <body class="min-h-screen selection:bg-stone-900 selection:text-white">
+    <!-- Nền khuếch tán ánh sáng giúp lớp kính trong suốt nổi bật -->
+    <div class="ambient-canvas"></div>
+
     <!-- THANH ĐIỀU HƯỚNG NỔI (FLOATING GLASS PILL) -->
-    <header class="sticky top-4 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
+    <header class="sticky top-6 z-50 px-4 sm:px-10 max-w-7xl mx-auto">
       <nav
-        class="liquid-pill-nav rounded-full px-5 py-3 flex items-center justify-between gap-4"
+        class="liquid-pill-nav rounded-full px-6 py-3.5 flex items-center justify-between gap-4"
       >
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3.5">
           <div
-            class="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center font-serif-display font-semibold text-lg"
+            class="w-10 h-10 rounded-full bg-stone-900 text-white flex items-center justify-center font-serif-display font-semibold text-lg shadow-sm"
           >
             B
           </div>
@@ -211,79 +257,81 @@
               class="text-sm font-bold tracking-tight text-stone-900 block leading-none"
               >Hành Trình Bắc Bộ</span
             >
-            <span class="text-xs text-stone-500 mt-0.5 block"
+            <span class="text-xs text-stone-500 mt-1 block"
               >06/12 – 16/12/2026</span
             >
           </div>
         </div>
 
         <div
-          class="hidden md:flex items-center gap-7 text-sm font-medium text-stone-600"
+          class="hidden md:flex items-center gap-9 text-sm font-medium text-stone-600"
         >
           <a href="#sec-config" class="hover:text-stone-950 transition"
-            >1. Thiết kế Chặng đi</a
+            >1. Chọn Chặng</a
           >
           <a href="#sec-map" class="hover:text-stone-950 transition"
-            >2. Bản đồ Không gian</a
+            >2. Bản đồ Tuyến</a
           >
           <a href="#sec-itinerary" class="hover:text-stone-950 transition"
-            >3. Lịch trình & Điểm đến</a
+            >3. Lịch trình Ngày</a
           >
         </div>
 
         <button
           onclick="openDashboardModal()"
-          class="flex items-center gap-2.5 bg-white hover:bg-stone-50 text-stone-900 border border-stone-200/90 px-4 py-2 rounded-full text-sm font-semibold shadow-sm transition active:scale-95"
+          class="flex items-center gap-2.5 bg-white/70 hover:bg-white text-stone-900 border border-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm transition active:scale-95"
         >
           <span>Danh sách Đoàn</span>
           <span
             id="header-vote-count"
-            class="bg-stone-900 text-white text-xs px-2 py-0.5 rounded-full tabular-nums"
+            class="bg-stone-900 text-white text-xs px-2.5 py-0.5 rounded-full tabular-nums"
             >0</span
           >
         </button>
       </nav>
     </header>
 
-    <!-- PHẦN MỞ ĐẦU (EDITORIAL HERO) -->
-    <section class="max-w-5xl mx-auto px-4 sm:px-8 pt-12 pb-10 text-center">
+    <!-- PHẦN MỞ ĐẦU THOÁNG ĐÃNG (EDITORIAL HERO) -->
+    <section class="max-w-4xl mx-auto px-6 sm:px-10 pt-20 pb-16 text-center">
       <div
-        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 border border-stone-200/80 text-xs font-semibold uppercase tracking-widest text-stone-600 mb-5 shadow-sm"
+        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/50 backdrop-blur-md border border-white/90 text-xs font-semibold uppercase tracking-widest text-stone-600 mb-7 shadow-sm"
       >
         Chuyến Khảo Sát & Trải Nghiệm Thực Địa • Tháng 12/2026
       </div>
       <h1
-        class="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-stone-900 tracking-tight leading-[1.12]"
+        class="font-serif-display text-4xl sm:text-6xl font-semibold text-stone-900 tracking-tight leading-[1.14]"
       >
-        Tùy biến lộ trình của bạn,<br class="hidden sm:inline" />
+        Thiết kế hành trình của bạn,<br />
         <span class="italic font-normal text-stone-600"
-          >rõ ràng trong từng điểm chạm.</span
+          >nhẹ nhàng và liền mạch.</span
         >
       </h1>
       <p
-        class="mt-5 text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed"
+        class="mt-6 text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed"
       >
-        Bên cạnh chặng chính tại Hà Nội, bạn có thể linh hoạt ghép thêm các hành
-        trình mở rộng đến Tam Đảo, Ninh Bình, Cát Bà và Vịnh Hạ Long. Chi phí và
-        lịch trình sẽ tự động đồng bộ theo lựa chọn của bạn.
+        Từ chặng chính tại Hà Nội, bạn có thể tự do bật hoặc tắt các chặng mở
+        rộng đi Tam Đảo, Ninh Bình, Cát Bà và Vịnh Hạ Long. Bản đồ không gian và
+        dự trù kinh phí sẽ tự động cập nhật theo thời gian thực.
       </p>
     </section>
 
-    <!-- PHẦN 1: BỘ CHỌN CHẶNG & TÓM TẮT NGÂN SÁCH (ASYMMETRIC GRID) -->
-    <section id="sec-config" class="max-w-7xl mx-auto px-4 sm:px-8 py-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <!-- CỘT TRÁI (7 PHẦN): DANH SÁCH CÁC CHẶNG (MODULES) -->
-        <div class="lg:col-span-7 space-y-5">
-          <div class="flex items-end justify-between px-1">
+    <!-- PHẦN 1: BỘ CHỌN CHẶNG & TÓM TẮT NGÂN SÁCH -->
+    <section id="sec-config" class="max-w-7xl mx-auto px-6 sm:px-10 py-10">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start"
+      >
+        <!-- CỘT TRÁI (7 PHẦN): CÁC THẺ MODULE KHOẢNG TRỐNG RỘNG -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="flex items-end justify-between px-2 pb-2">
             <div>
               <span
                 class="text-xs font-bold uppercase tracking-widest text-stone-400"
                 >Bước 01</span
               >
               <h2
-                class="font-serif-display text-2xl sm:text-3xl font-semibold text-stone-900 mt-0.5"
+                class="font-serif-display text-3xl sm:text-4xl font-semibold text-stone-900 mt-1"
               >
-                Lựa chọn các chặng tham gia
+                Cấu hình Chặng đi
               </h2>
             </div>
             <button
@@ -297,39 +345,39 @@
           <!-- Thông báo tự động nối tuyến -->
           <div
             id="chain-notice"
-            class="hidden p-4 rounded-2xl bg-amber-50/90 border border-amber-200 text-sm text-amber-900 leading-relaxed shadow-sm"
+            class="hidden p-5 rounded-3xl bg-white/75 backdrop-blur-xl border border-amber-300/80 text-sm text-stone-800 leading-relaxed shadow-sm"
           ></div>
 
           <!-- CHẶNG CỐ ĐỊNH: CORE HÀ NỘI -->
-          <div
-            class="module-card active-card p-6 sm:p-7 relative overflow-hidden"
-          >
+          <div class="module-card active-card p-8 sm:p-9">
             <div
-              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-stone-100"
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-900/10"
             >
-              <div class="space-y-1.5">
+              <div class="space-y-2">
                 <div class="flex items-center gap-2.5">
                   <span class="w-3 h-3 rounded-full bg-[#0F4C81]"></span>
                   <span
-                    class="text-xs font-bold uppercase tracking-wider text-[#0F4C81] bg-[#0F4C81]/10 px-3 py-1 rounded-full"
+                    class="text-xs font-bold uppercase tracking-wider text-[#0F4C81] bg-[#0F4C81]/10 px-3.5 py-1 rounded-full"
                   >
                     Chặng Cố Định • 07/12 – 11/12 (5N4Đ)
                   </span>
                 </div>
-                <h3 class="text-xl sm:text-2xl font-bold text-stone-900">
+                <h3 class="text-2xl font-bold text-stone-900">
                   Chặng Chính: Hà Nội Study Trip
                 </h3>
               </div>
               <div class="sm:text-right">
-                <div class="text-xs text-stone-400 font-medium">
+                <div class="text-xs text-stone-500 font-medium">
                   Chi phí nền
                 </div>
-                <div class="text-2xl font-bold text-stone-900 tabular-nums">
+                <div
+                  class="text-2xl font-bold text-stone-900 tabular-nums mt-0.5"
+                >
                   5.985.000₫
                 </div>
               </div>
             </div>
-            <p class="mt-4 text-base text-stone-600 leading-relaxed">
+            <p class="mt-5 text-base text-stone-600 leading-relaxed">
               Khảo sát cấu trúc đô thị và di sản Thủ đô: Bảo tàng Hà Nội, tuyến
               Metro Cát Linh, Văn Miếu, khu phố cổ Hoàn Kiếm – 22 Hàng Buồm và
               Bảo tàng Lịch sử Quân sự mới.
@@ -339,19 +387,19 @@
           <!-- CHẶNG MỞ RỘNG A: TAM ĐẢO -->
           <label
             id="card-A"
-            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+            class="module-card p-8 sm:p-9 block cursor-pointer select-none"
           >
-            <div class="flex items-start justify-between gap-4">
-              <div class="space-y-2 pr-2">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-[#6D4C7D]"></span>
+            <div class="flex items-start justify-between gap-6">
+              <div class="space-y-3">
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-[#7C3AED]"></span>
                   <span
-                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                    class="text-xs font-semibold text-stone-600 bg-white/60 border border-white px-3.5 py-1 rounded-full"
                   >
                     Khởi động sớm • 06/12 – 07/12
                   </span>
                 </div>
-                <h3 class="text-xl font-bold text-stone-900">
+                <h3 class="text-xl sm:text-2xl font-bold text-stone-900">
                   Mở rộng A: Thị trấn Sương mù Tam Đảo
                 </h3>
                 <p class="text-base text-stone-600 leading-relaxed">
@@ -360,7 +408,7 @@
                   Đá và tiệc nướng BBQ tối trước khi về Hà Nội hội quân.
                 </p>
               </div>
-              <div class="flex flex-col items-end gap-3 shrink-0">
+              <div class="flex flex-col items-end gap-4 shrink-0">
                 <input
                   type="checkbox"
                   id="mod-A"
@@ -368,7 +416,7 @@
                   class="sr-only"
                 />
                 <div class="ios-switch"></div>
-                <div class="text-right mt-1">
+                <div class="text-right">
                   <span class="text-xs text-stone-400 block">Cộng thêm</span>
                   <span class="text-lg font-bold text-stone-900 tabular-nums"
                     >+1.250.000₫</span
@@ -381,19 +429,19 @@
           <!-- CHẶNG MỞ RỘNG B: NINH BÌNH -->
           <label
             id="card-B"
-            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+            class="module-card p-8 sm:p-9 block cursor-pointer select-none"
           >
-            <div class="flex items-start justify-between gap-4">
-              <div class="space-y-2 pr-2">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-[#B86B35]"></span>
+            <div class="flex items-start justify-between gap-6">
+              <div class="space-y-3">
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-[#D97706]"></span>
                   <span
-                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                    class="text-xs font-semibold text-stone-600 bg-white/60 border border-white px-3.5 py-1 rounded-full"
                   >
                     Nối tiếp Hà Nội • 11/12 – 13/12
                   </span>
                 </div>
-                <h3 class="text-xl font-bold text-stone-900">
+                <h3 class="text-xl sm:text-2xl font-bold text-stone-900">
                   Mở rộng B: Di sản Tràng An – Ninh Bình
                 </h3>
                 <p class="text-base text-stone-600 leading-relaxed">
@@ -402,7 +450,7 @@
                   ngắm hoàng hôn Tam Cốc và dạo Phố cổ Hoa Lư về đêm.
                 </p>
               </div>
-              <div class="flex flex-col items-end gap-3 shrink-0">
+              <div class="flex flex-col items-end gap-4 shrink-0">
                 <input
                   type="checkbox"
                   id="mod-B"
@@ -410,7 +458,7 @@
                   class="sr-only"
                 />
                 <div class="ios-switch"></div>
-                <div class="text-right mt-1">
+                <div class="text-right">
                   <span class="text-xs text-stone-400 block">Cộng thêm</span>
                   <span class="text-lg font-bold text-stone-900 tabular-nums"
                     >+2.290.000₫</span
@@ -423,19 +471,19 @@
           <!-- CHẶNG MỞ RỘNG C: CÁT BÀ - HẢI PHÒNG -->
           <label
             id="card-C"
-            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+            class="module-card p-8 sm:p-9 block cursor-pointer select-none"
           >
-            <div class="flex items-start justify-between gap-4">
-              <div class="space-y-2 pr-2">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-[#1B6B53]"></span>
+            <div class="flex items-start justify-between gap-6">
+              <div class="space-y-3">
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-[#059669]"></span>
                   <span
-                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                    class="text-xs font-semibold text-stone-600 bg-white/60 border border-white px-3.5 py-1 rounded-full"
                   >
                     Nối tiếp Ninh Bình • 13/12 – 15/12
                   </span>
                 </div>
-                <h3 class="text-xl font-bold text-stone-900">
+                <h3 class="text-xl sm:text-2xl font-bold text-stone-900">
                   Mở rộng C: Hải Phòng – Đảo Cát Bà & Vịnh Lan Hạ
                 </h3>
                 <p class="text-base text-stone-600 leading-relaxed">
@@ -444,7 +492,7 @@
                   Lan Hạ, chèo thuyền Kayak và đi bộ xuyên rừng Vườn Quốc gia.
                 </p>
               </div>
-              <div class="flex flex-col items-end gap-3 shrink-0">
+              <div class="flex flex-col items-end gap-4 shrink-0">
                 <input
                   type="checkbox"
                   id="mod-C"
@@ -452,7 +500,7 @@
                   class="sr-only"
                 />
                 <div class="ios-switch"></div>
-                <div class="text-right mt-1">
+                <div class="text-right">
                   <span class="text-xs text-stone-400 block">Cộng thêm</span>
                   <span class="text-lg font-bold text-stone-900 tabular-nums"
                     >+1.760.000₫</span
@@ -465,19 +513,19 @@
           <!-- CHẶNG MỞ RỘNG D: HẠ LONG -->
           <label
             id="card-D"
-            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+            class="module-card p-8 sm:p-9 block cursor-pointer select-none"
           >
-            <div class="flex items-start justify-between gap-4">
-              <div class="space-y-2 pr-2">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-[#A63A50]"></span>
+            <div class="flex items-start justify-between gap-6">
+              <div class="space-y-3">
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-[#E11D48]"></span>
                   <span
-                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                    class="text-xs font-semibold text-stone-600 bg-white/60 border border-white px-3.5 py-1 rounded-full"
                   >
                     Nối tiếp Cát Bà • 15/12 – 16/12
                   </span>
                 </div>
-                <h3 class="text-xl font-bold text-stone-900">
+                <h3 class="text-xl sm:text-2xl font-bold text-stone-900">
                   Mở rộng D: Vịnh Hạ Long – Quảng Ninh
                 </h3>
                 <p class="text-base text-stone-600 leading-relaxed">
@@ -487,7 +535,7 @@
                   Cát Bi.
                 </p>
               </div>
-              <div class="flex flex-col items-end gap-3 shrink-0">
+              <div class="flex flex-col items-end gap-4 shrink-0">
                 <input
                   type="checkbox"
                   id="mod-D"
@@ -495,7 +543,7 @@
                   class="sr-only"
                 />
                 <div class="ios-switch"></div>
-                <div class="text-right mt-1">
+                <div class="text-right">
                   <span class="text-xs text-stone-400 block">Cộng thêm</span>
                   <span class="text-lg font-bold text-stone-900 tabular-nums"
                     >+1.500.000₫</span
@@ -506,36 +554,36 @@
           </label>
         </div>
 
-        <!-- CỘT PHẢI (5 PHẦN): THẺ TỔNG HỢP NGÂN SÁCH & ĐĂNG KÝ (STICKY GLASS CARD) -->
-        <div class="lg:col-span-5 lg:sticky lg:top-24">
-          <div class="liquid-glass rounded-[32px] p-7 sm:p-8 space-y-6">
+        <!-- CỘT PHẢI (5 PHẦN): THẺ KÍNH TỔNG HỢP & GHI DANH -->
+        <div class="lg:col-span-5 lg:sticky lg:top-28">
+          <div class="liquid-glass rounded-[36px] p-8 sm:p-10 space-y-7">
             <div>
               <span
                 class="text-xs font-bold uppercase tracking-widest text-stone-400"
                 >Bước 02</span
               >
               <h3
-                class="font-serif-display text-2xl sm:text-3xl font-semibold text-stone-900 mt-0.5"
+                class="font-serif-display text-3xl font-semibold text-stone-900 mt-1"
               >
-                Bảng Tóm tắt & Ngân sách
+                Dự trù Ngân sách
               </h3>
-              <p class="text-sm text-stone-500 mt-1">
-                Tự động tính toán dựa trên các chặng bạn đã bật.
+              <p class="text-sm text-stone-500 mt-1.5">
+                Tự động tính toán theo các chặng bạn đã bật ở cột bên trái.
               </p>
             </div>
 
-            <!-- Các chặng đang chọn -->
-            <div class="space-y-3 pt-2 border-t border-stone-200/70">
+            <!-- Tóm tắt thời gian & các chặng -->
+            <div class="space-y-4 pt-4 border-t border-stone-900/10">
               <div class="flex justify-between items-center text-sm">
-                <span class="text-stone-500">Thời gian hành trình</span>
+                <span class="text-stone-500">Tổng thời gian</span>
                 <span
                   id="total-days"
                   class="font-bold text-stone-900 tabular-nums"
                   >5 ngày (07/12 – 11/12)</span
                 >
               </div>
-              <div class="flex justify-between items-center text-sm">
-                <span class="text-stone-500">Các chặng tham gia</span>
+              <div class="flex justify-between items-center text-sm gap-2">
+                <span class="text-stone-500 shrink-0">Lộ trình của bạn</span>
                 <div
                   id="selected-pills"
                   class="flex flex-wrap gap-1.5 justify-end"
@@ -543,9 +591,9 @@
               </div>
             </div>
 
-            <!-- Chi tiết chi phí -->
+            <!-- Khung số tiền trong suốt -->
             <div
-              class="bg-stone-100/80 rounded-2xl p-5 space-y-3 border border-stone-200/60"
+              class="bg-white/45 backdrop-blur-md rounded-3xl p-6 space-y-3.5 border border-white/90 shadow-sm"
             >
               <div class="flex justify-between text-sm text-stone-600">
                 <span>Chi phí theo chặng đã chọn</span>
@@ -564,10 +612,10 @@
                 >
               </div>
               <div
-                class="pt-3 border-t border-stone-200 flex justify-between items-baseline"
+                class="pt-4 border-t border-stone-900/10 flex justify-between items-baseline"
               >
                 <span class="text-sm font-bold text-stone-900"
-                  >Tổng ngân sách chuẩn bị</span
+                  >Tổng chuẩn bị</span
                 >
                 <span
                   id="final-cost"
@@ -577,40 +625,40 @@
               </div>
             </div>
 
-            <!-- Biểu mẫu xác nhận lộ trình (Ẩn danh công khai) -->
+            <!-- Form ghi danh -->
             <div class="space-y-4 pt-2">
               <div class="flex items-center justify-between">
                 <label
                   for="member-name"
                   class="text-sm font-bold text-stone-900"
-                  >Ghi danh lộ trình của bạn</label
+                  >Ghi danh lộ trình</label
                 >
                 <span
-                  class="text-xs text-stone-500 bg-stone-200/70 px-2.5 py-0.5 rounded-full"
-                  >Tự động ẩn danh trên Web</span
+                  class="text-xs text-stone-600 bg-white/60 border border-white px-3 py-1 rounded-full"
+                  >Ẩn danh công khai</span
                 >
               </div>
 
-              <div class="space-y-3">
+              <div class="space-y-3.5">
                 <input
                   type="text"
                   id="member-name"
                   placeholder="Nhập họ và tên đầy đủ của bạn..."
-                  class="w-full bg-white border border-stone-300/90 rounded-2xl px-4 py-3.5 text-base text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 transition"
+                  class="glass-input w-full rounded-2xl px-4 py-4 text-base text-stone-900 placeholder:text-stone-400"
                 />
 
                 <input
                   type="text"
                   id="member-note"
-                  placeholder="Ghi chú thêm (VD: Ăn chay, giờ bay dự kiến...)"
-                  class="w-full bg-white border border-stone-300/90 rounded-2xl px-4 py-3.5 text-base text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 transition"
+                  placeholder="Ghi chú (VD: Ăn chay, giờ bay dự kiến...)"
+                  class="glass-input w-full rounded-2xl px-4 py-4 text-base text-stone-900 placeholder:text-stone-400"
                 />
               </div>
 
               <button
                 id="btn-submit-vote"
                 onclick="submitVote()"
-                class="btn-luxury w-full py-4 px-6 text-base font-semibold flex items-center justify-center gap-2 cursor-pointer"
+                class="btn-luxury w-full py-4 px-6 text-base font-semibold flex items-center justify-center gap-2.5 cursor-pointer mt-2"
               >
                 <span>Xác nhận Lộ trình này</span>
                 <svg
@@ -628,9 +676,11 @@
                 </svg>
               </button>
 
-              <p class="text-xs text-stone-500 leading-relaxed text-center">
-                Tên thật của bạn chỉ hiển thị với Ban Tổ Chức để sắp xếp xe và
-                phòng nghỉ. Trên bảng công khai, tên sẽ được mã hóa ẩn danh.
+              <p
+                class="text-xs text-stone-500 leading-relaxed text-center px-2"
+              >
+                Họ tên thật của bạn chỉ hiển thị riêng cho Ban Tổ Chức. Trên
+                danh sách chung của đoàn, tên sẽ được che ẩn danh.
               </p>
 
               <div
@@ -643,129 +693,129 @@
       </div>
     </section>
 
-    <!-- PHẦN 2: BẢN ĐỒ KHÔNG GIAN TƯƠNG TÁC (APPLE MAPS / VOYAGER LIGHT STYLE) -->
-    <section id="sec-map" class="max-w-7xl mx-auto px-4 sm:px-8 py-12">
+    <!-- PHẦN 2: BẢN ĐỒ KHÔNG GIAN TƯƠNG TÁC (ESRI GIS - HIỆN 100% KHÔNG CẦN API KEY) -->
+    <section id="sec-map" class="max-w-7xl mx-auto px-6 sm:px-10 py-16">
       <div
-        class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 px-1"
+        class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 px-2"
       >
         <div>
           <span
             class="text-xs font-bold uppercase tracking-widest text-stone-400"
-            >Bước 03 • Trực quan hóa Không gian</span
+            >Bước 03 • Không gian Tuyến đi</span
           >
           <h2
-            class="font-serif-display text-3xl sm:text-4xl font-semibold text-stone-900 mt-1"
+            class="font-serif-display text-3xl sm:text-5xl font-semibold text-stone-900 mt-1"
           >
-            Bản đồ Hành trình & Điểm khảo sát
+            Bản đồ Lộ trình & Điểm khảo sát
           </h2>
-          <p class="text-base text-stone-600 mt-1">
-            Nhấp vào từng điểm đánh dấu trên bản đồ để xem hình ảnh thực tế và
-            thông tin chi tiết.
+          <p class="text-base text-stone-600 mt-2">
+            Đường kẻ màu xanh đậm thể hiện Chặng chính Hà Nội. Khi bạn bật thêm
+            chặng mở rộng, tuyến đường sẽ tự động nối dài trên bản đồ.
           </p>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 shrink-0">
           <button
             onclick="fitAllActiveBounds()"
-            class="bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 px-4 py-2.5 rounded-full text-sm font-semibold shadow-sm transition"
+            class="bg-white/70 hover:bg-white text-stone-900 border border-white px-5 py-3 rounded-full text-sm font-semibold shadow-sm transition"
           >
-            Căn chỉnh toàn tuyến
+            Thu phóng toàn tuyến
           </button>
         </div>
       </div>
 
-      <!-- Khung bản đồ bo góc lớn -->
-      <div class="liquid-glass p-2.5 sm:p-3.5 rounded-[36px] relative">
+      <!-- Khung bản đồ bo góc lớn phủ kính trong suốt -->
+      <div class="liquid-glass p-3 sm:p-4 rounded-[40px] relative">
         <div
           id="map"
-          class="w-full h-[520px] sm:h-[600px] rounded-[28px] z-10 overflow-hidden"
+          class="w-full h-[540px] sm:h-[640px] rounded-[30px] z-10 overflow-hidden shadow-inner"
         ></div>
 
-        <!-- Chú giải nổi bằng kính mờ sáng -->
+        <!-- Chú giải nổi bằng kính mờ trong suốt -->
         <div
-          class="mt-3 sm:mt-0 sm:absolute sm:bottom-8 sm:left-8 liquid-glass px-5 py-4 rounded-2xl z-[400] text-xs sm:text-sm space-y-2 pointer-events-auto"
+          class="mt-4 sm:mt-0 sm:absolute sm:bottom-9 sm:left-9 liquid-glass px-6 py-5 rounded-3xl z-[400] text-xs sm:text-sm space-y-2.5 pointer-events-auto"
         >
           <div
-            class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-1"
+            class="text-[11px] font-bold uppercase tracking-widest text-stone-500 mb-1"
           >
-            Chú giải các tuyến
+            Chú giải Tuyến đường
           </div>
           <div
-            class="flex flex-wrap sm:flex-col gap-3 sm:gap-2 font-medium text-stone-700"
+            class="flex flex-wrap sm:flex-col gap-3 sm:gap-2.5 font-semibold text-stone-800"
           >
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-3">
               <span
-                class="w-4 h-1.5 bg-[#0F4C81] rounded-full inline-block"
+                class="w-5 h-1.5 bg-[#0F4C81] rounded-full inline-block"
               ></span>
-              Chặng chính: Hà Nội
+              Chặng chính: Hà Nội (07–11/12)
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-3">
               <span
-                class="w-4 h-1.5 bg-[#6D4C7D] rounded-full inline-block"
+                class="w-5 h-1.5 bg-[#7C3AED] rounded-full inline-block"
               ></span>
-              Mở rộng A: Tam Đảo
+              Mở rộng A: Tam Đảo (06–07/12)
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-3">
               <span
-                class="w-4 h-1.5 bg-[#B86B35] rounded-full inline-block"
+                class="w-5 h-1.5 bg-[#D97706] rounded-full inline-block"
               ></span>
-              Mở rộng B: Ninh Bình
+              Mở rộng B: Ninh Bình (11–13/12)
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-3">
               <span
-                class="w-4 h-1.5 bg-[#1B6B53] rounded-full inline-block"
+                class="w-5 h-1.5 bg-[#059669] rounded-full inline-block"
               ></span>
-              Mở rộng C: Cát Bà – Hải Phòng
+              Mở rộng C: Cát Bà (13–15/12)
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-3">
               <span
-                class="w-4 h-1.5 bg-[#A63A50] rounded-full inline-block"
+                class="w-5 h-1.5 bg-[#E11D48] rounded-full inline-block"
               ></span>
-              Mở rộng D: Vịnh Hạ Long
+              Mở rộng D: Hạ Long (15–16/12)
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PHẦN 3: LỊCH TRÌNH CHI TIẾT & BỘ SƯU TẬP ĐIỂM ĐẾN -->
+    <!-- PHẦN 3: LỊCH TRÌNH CHI TIẾT TỪNG NGÀY -->
     <section
       id="sec-itinerary"
-      class="max-w-7xl mx-auto px-4 sm:px-8 py-10 pb-24"
+      class="max-w-7xl mx-auto px-6 sm:px-10 py-14 pb-28"
     >
-      <div class="mb-8 px-1">
+      <div class="mb-10 px-2">
         <span class="text-xs font-bold uppercase tracking-widest text-stone-400"
           >Bước 04 • Chi tiết từng ngày</span
         >
         <h2
-          class="font-serif-display text-3xl sm:text-4xl font-semibold text-stone-900 mt-1"
+          class="font-serif-display text-3xl sm:text-5xl font-semibold text-stone-900 mt-1"
         >
-          Lịch trình & Điểm đến theo lựa chọn của bạn
+          Lịch trình & Điểm đến thực tế
         </h2>
-        <p class="text-base text-stone-600 mt-1">
-          Bấm vào bất kỳ thẻ địa điểm nào bên dưới để tự động di chuyển bản đồ
-          đến đúng vị trí đó.
+        <p class="text-base text-stone-600 mt-2">
+          Nhấp vào bất kỳ địa điểm nào trong từng ngày bên dưới để bay tới vị
+          trí và xem hình ảnh trên bản đồ.
         </p>
       </div>
 
       <div
         id="timeline-grid"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
       >
-        <!-- Render tự động bằng JavaScript -->
+        <!-- Render tự động bằng JS -->
       </div>
     </section>
 
     <!-- HỘP THOẠI (MODAL) THỐNG KÊ ĐOÀN & MỞ KHÓA DÀNH CHO BAN TỔ CHỨC -->
     <div
       id="dashboard-modal"
-      class="fixed inset-0 bg-stone-900/40 backdrop-blur-md z-[2000] hidden items-center justify-center p-4"
+      class="fixed inset-0 bg-stone-900/30 backdrop-blur-xl z-[2000] hidden items-center justify-center p-4 sm:p-6"
     >
       <div
-        class="bg-[#FBFBF9] border border-white rounded-[32px] max-w-4xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-2xl"
+        class="liquid-glass bg-white/80 rounded-[36px] max-w-4xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-2xl border border-white"
       >
         <!-- Đầu hộp thoại -->
         <div
-          class="px-7 py-5 border-b border-stone-200/80 flex justify-between items-center bg-white"
+          class="px-8 py-6 border-b border-stone-900/10 flex justify-between items-center bg-white/50"
         >
           <div>
             <span
@@ -773,48 +823,47 @@
               >Dữ liệu Thời gian thực</span
             >
             <h3
-              class="font-serif-display text-2xl font-semibold text-stone-900"
+              class="font-serif-display text-2xl sm:text-3xl font-semibold text-stone-900"
             >
               Bảng Tổng hợp Đăng ký Lộ trình
             </h3>
           </div>
           <button
             onclick="closeDashboardModal()"
-            class="w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center text-xl font-medium transition"
+            class="w-11 h-11 rounded-full bg-white/80 hover:bg-white text-stone-700 flex items-center justify-center text-2xl font-normal shadow-sm transition"
           >
             &times;
           </button>
         </div>
 
         <!-- Thân hộp thoại -->
-        <div class="p-7 overflow-y-auto space-y-6 flex-1">
+        <div class="p-8 overflow-y-auto space-y-7 flex-1">
           <!-- Thống kê số lượng từng chặng -->
           <div>
             <div
-              class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3"
+              class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3.5"
             >
               Số lượng thành viên theo từng chặng (Cơ sở điều phối phương tiện)
             </div>
             <div
               id="module-stats-bars"
-              class="grid grid-cols-1 sm:grid-cols-5 gap-3"
+              class="grid grid-cols-1 sm:grid-cols-5 gap-3.5"
             ></div>
           </div>
 
           <!-- Khu vực mở khóa tên thật dành cho Ban Tổ Chức -->
           <div
-            class="bg-white border border-stone-200/90 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-sm"
+            class="bg-white/65 border border-white rounded-3xl p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 shadow-sm"
           >
             <div>
               <div
                 id="admin-status-title"
                 class="text-sm font-bold text-stone-900"
               >
-                Chế độ Công khai (Tên thành viên đã được mã hóa ẩn danh)
+                Chế độ Công khai (Tên thành viên đang được che ẩn danh)
               </div>
-              <div class="text-xs text-stone-500 mt-0.5">
-                Ban Tổ Chức vui lòng nhập mã PIN quản trị để hiển thị họ tên đầy
-                đủ phục vụ đặt vé và lưu trú.
+              <div class="text-xs text-stone-500 mt-1">
+                Ban Tổ Chức nhập mã PIN quản trị để hiển thị danh sách đầy đủ.
               </div>
             </div>
             <div class="flex items-center gap-2.5">
@@ -822,18 +871,17 @@
                 type="password"
                 id="admin-pin-input"
                 placeholder="Mã PIN..."
-                class="bg-stone-50 border border-stone-300 rounded-full px-4 py-2 text-sm text-stone-900 w-36 focus:outline-none focus:border-stone-900"
+                class="glass-input rounded-full px-4 py-2.5 text-sm text-stone-900 w-36"
               />
               <button
                 onclick="unlockAdminNames()"
-                class="bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold px-5 py-2 rounded-full transition"
+                class="bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition"
               >
-                Xác thực
+                Mở khóa
               </button>
               <button
                 onclick="fetchVotesFromDB()"
-                class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-sm font-medium px-3.5 py-2 rounded-full transition"
-                title="Làm mới dữ liệu"
+                class="bg-white/80 hover:bg-white text-stone-700 text-sm font-medium px-4 py-2.5 rounded-full border border-white transition"
               >
                 Làm mới
               </button>
@@ -842,25 +890,25 @@
 
           <!-- Bảng danh sách đã đăng ký -->
           <div
-            class="bg-white border border-stone-200/90 rounded-2xl overflow-hidden shadow-sm"
+            class="bg-white/65 border border-white rounded-3xl overflow-hidden shadow-sm"
           >
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse text-sm">
                 <thead>
                   <tr
-                    class="bg-stone-50 text-stone-500 text-xs font-bold uppercase tracking-wider border-b border-stone-200/80"
+                    class="bg-white/50 text-stone-500 text-xs font-bold uppercase tracking-wider border-b border-stone-200/70"
                   >
-                    <th class="py-3.5 px-4">Mã</th>
-                    <th class="py-3.5 px-4">Thành viên</th>
-                    <th class="py-3.5 px-4">Lộ trình đăng ký</th>
-                    <th class="py-3.5 px-4">Ngân sách dự kiến</th>
-                    <th class="py-3.5 px-4">Ghi chú</th>
-                    <th class="py-3.5 px-4 text-right">Thời gian</th>
+                    <th class="py-4 px-5">Mã</th>
+                    <th class="py-4 px-5">Thành viên</th>
+                    <th class="py-4 px-5">Lộ trình đăng ký</th>
+                    <th class="py-4 px-5">Ngân sách dự kiến</th>
+                    <th class="py-4 px-5">Ghi chú</th>
+                    <th class="py-4 px-5 text-right">Thời gian</th>
                   </tr>
                 </thead>
                 <tbody
                   id="votes-table-body"
-                  class="divide-y divide-stone-100"
+                  class="divide-y divide-stone-200/50"
                 ></tbody>
               </table>
             </div>
@@ -874,8 +922,9 @@
       // CẤU HÌNH KẾT NỐI GOOGLE SHEETS (APPS SCRIPT WEBHOOK)
       // =========================================================================
       // Dán đường link Web App URL từ Google Apps Script của bạn vào giữa cặp dấu nháy kép:
-      const APPS_SCRIPT_URL = "";
-      const DEMO_ADMIN_PIN = "2026";
+      const APPS_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbw05mphb3d3LVgZdNcwFnvEYjwaVPljp40sxp7dgv4XAIoRRkbEr83GbOhm59lRWp-J/exec";
+      const DEMO_ADMIN_PIN = "2006";
 
       // =========================================================================
       // 1. DỮ LIỆU 17 ĐỊA ĐIỂM KÈM HÌNH ẢNH THỰC TẾ & LỊCH TRÌNH
@@ -885,7 +934,7 @@
           name: "Hà Nội",
           price: 5985000,
           color: "#0F4C81",
-          badge: "bg-[#0F4C81]/10 text-[#0F4C81]",
+          badge: "bg-[#0F4C81]/12 text-[#0F4C81]",
           coords: [
             {
               id: "core-1",
@@ -971,8 +1020,8 @@
         A: {
           name: "Tam Đảo",
           price: 1250000,
-          color: "#6D4C7D",
-          badge: "bg-[#6D4C7D]/10 text-[#6D4C7D]",
+          color: "#7C3AED",
+          badge: "bg-[#7C3AED]/12 text-[#7C3AED]",
           coords: [
             {
               id: "a-1",
@@ -1024,8 +1073,8 @@
         B: {
           name: "Ninh Bình",
           price: 2290000,
-          color: "#B86B35",
-          badge: "bg-[#B86B35]/10 text-[#B86B35]",
+          color: "#D97706",
+          badge: "bg-[#D97706]/12 text-[#D97706]",
           coords: [
             {
               id: "b-1",
@@ -1085,8 +1134,8 @@
         C: {
           name: "Cát Bà",
           price: 1760000,
-          color: "#1B6B53",
-          badge: "bg-[#1B6B53]/10 text-[#1B6B53]",
+          color: "#059669",
+          badge: "bg-[#059669]/12 text-[#059669]",
           coords: [
             {
               id: "c-1",
@@ -1146,8 +1195,8 @@
         D: {
           name: "Hạ Long",
           price: 1500000,
-          color: "#A63A50",
-          badge: "bg-[#A63A50]/10 text-[#A63A50]",
+          color: "#E11D48",
+          badge: "bg-[#E11D48]/12 text-[#E11D48]",
           coords: [
             {
               id: "d-1",
@@ -1198,53 +1247,74 @@
         },
       };
 
-    // =========================================================================
-    // 2. KHỞI TẠO BẢN ĐỒ SÁNG SANG TRỌNG (100% KHÔNG CẦN API KEY)
-    // =========================================================================
-    // Tự động chèn bộ lọc màu Kem ấm (Editorial Warm Filter) cho OpenStreetMap
-    const mapFilterStyle = document.createElement('style');
-    mapFilterStyle.innerHTML = `
-      .editorial-light-tiles {
-        filter: sepia(14%) saturate(58%) contrast(93%) brightness(103%) hue-rotate(-5deg);
+      // =========================================================================
+      // 2. KHỞI TẠO BẢN ĐỒ ESRI GIS (HIỆN 100% TRÊN MỌI MÁY, KHÔNG CẦN API KEY)
+      // =========================================================================
+      // Lớp 1 (Mặc định): Bản đồ Địa hình & Giao thông Sáng của Esri (Đã kiểm chứng hiện 100%)
+      const esriTopoLayer = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 19,
+          className: "esri-clean-filter",
+          attribution: "Tiles &copy; Esri",
+        },
+      );
+
+      // Lớp 2: Bản đồ Tối giản Kem Xám Sáng (Esri Light Gray Canvas - Rất nổi đường Line)
+      const esriLightGrayLayer = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 16,
+          attribution: "Tiles &copy; Esri",
+        },
+      );
+
+      // Lớp 3: Ảnh Vệ tinh Thực tế Esri
+      const esriSatelliteLayer = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 18,
+          attribution: "Tiles &copy; Esri",
+        },
+      );
+
+      const map = L.map("map", {
+        center: [21.05, 105.8],
+        zoom: 10,
+        layers: [esriTopoLayer],
+        renderer: L.svg(), // Đảm bảo vẽ đường Line SVG sắc nét trên mọi trình duyệt
+        scrollWheelZoom: false,
+      });
+
+      map.on("click", () => map.scrollWheelZoom.enable());
+      map.on("mouseout", () => map.scrollWheelZoom.disable());
+
+      L.control
+        .layers(
+          {
+            "Bản đồ Sáng Địa hình (Mặc định)": esriTopoLayer,
+            "Bản đồ Tối giản Sáng (Nổi bật Tuyến)": esriLightGrayLayer,
+            "Ảnh Vệ tinh Thực tế": esriSatelliteLayer,
+          },
+          null,
+          { position: "topright" },
+        )
+        .addTo(map);
+
+      let activeLayers = L.layerGroup().addTo(map);
+      let markerRegistry = {};
+      let currentBounds = [];
+
+      function createFallbackSVG(title, color) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
+        <rect width="600" height="360" fill="#F4F3EE"/>
+        <circle cx="300" cy="150" r="42" fill="${color}" fill-opacity="0.14"/>
+        <circle cx="300" cy="150" r="10" fill="${color}"/>
+        <text x="300" y="235" text-anchor="middle" fill="#141413" font-family="Georgia, serif" font-size="22" font-weight="bold">${title}</text>
+        <text x="300" y="265" text-anchor="middle" fill="#8C8B85" font-family="sans-serif" font-size="14">Điểm khảo sát Hành trình Bắc Bộ</text>
+      </svg>`;
+        return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
       }
-    `;
-    document.head.appendChild(mapFilterStyle);
-
-    // Lớp 1 (Mặc định): OpenStreetMap chính thức + Phủ màu Kem sang trọng (Không bao giờ đòi API Key)
-    const editorialOsmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      className: 'editorial-light-tiles',
-      attribution: '&copy; OpenStreetMap contributors'
-    });
-
-    // Lớp 2: Bản đồ Địa hình & Kiến trúc Sáng (Esri World Topo - Miễn phí 100%, không cần Key)
-    const esriTopoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19,
-      attribution: 'Tiles &copy; Esri'
-    });
-
-    // Lớp 3: Ảnh vệ tinh Esri World Imagery (Miễn phí 100%, không cần Key)
-    const esriSatelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 18,
-      attribution: 'Tiles &copy; Esri'
-    });
-
-    const map = L.map('map', {
-      center: [20.85, 106.15],
-      zoom: 8,
-      layers: [editorialOsmLayer],
-      scrollWheelZoom: false
-    });
-
-    // Bật zoom cuộn chuột khi người dùng click vào bản đồ
-    map.on('click', () => map.scrollWheelZoom.enable());
-    map.on('mouseout', () => map.scrollWheelZoom.disable());
-
-    L.control.layers({
-      "Bản đồ Kem Sáng Editorial (Mặc định)": editorialOsmLayer,
-      "Bản đồ Địa hình Sáng (Esri Topo)": esriTopoLayer,
-      "Ảnh Vệ tinh Thực tế (Esri)": esriSatelliteLayer
-    }, null, { position: 'topright' }).addTo(map);
 
       // =========================================================================
       // 3. LOGIC RÀNG BUỘC CHẶNG LIÊN TUYẾN (B <- C <- D)
@@ -1267,7 +1337,7 @@
         if (mod === "D" && d.checked) {
           if (!b.checked || !c.checked) {
             showChainNotice(
-              "Lưu ý: Hệ thống đã tự động chọn thêm chặng Ninh Bình (B) và Cát Bà (C) để đảm bảo lộ trình di chuyển liền mạch tới Vịnh Hạ Long (D).",
+              "Lưu ý: Hệ thống đã tự động bật thêm chặng Ninh Bình (B) và Cát Bà (C) để nối tuyến liền mạch tới Vịnh Hạ Long (D).",
             );
           }
           c.checked = true;
@@ -1311,7 +1381,7 @@
       }
 
       // =========================================================================
-      // 4. RENDER GIAO DIỆN, BẢN ĐỒ & TIMELINE
+      // 4. VẼ ĐƯỜNG LINE LỘ TRÌNH 2 LỚP NỔI BẬT & RENDER GIAO DIỆN
       // =========================================================================
       function findSpotById(spotId) {
         for (const key of Object.keys(modulesData)) {
@@ -1340,8 +1410,9 @@
       }
 
       function fitAllActiveBounds() {
+        map.invalidateSize();
         if (currentBounds.length > 0) {
-          map.fitBounds(currentBounds, { padding: [55, 55] });
+          map.fitBounds(currentBounds, { padding: [60, 60], maxZoom: 12 });
         }
       }
 
@@ -1356,7 +1427,6 @@
         if (document.getElementById("mod-C").checked) selected.push("C");
         if (document.getElementById("mod-D").checked) selected.push("D");
 
-        // Cập nhật trạng thái nổi bật cho các thẻ Module
         ["A", "B", "C", "D"].forEach((k) => {
           const card = document.getElementById("card-" + k);
           const checked = document.getElementById("mod-" + k).checked;
@@ -1364,11 +1434,10 @@
           else card.classList.remove("active-card");
         });
 
-        // Hiển thị các nhãn chặng trong bảng tóm tắt
         document.getElementById("selected-pills").innerHTML = selected
           .map((k) => {
             const m = modulesData[k];
-            return `<span class="text-xs font-semibold px-2.5 py-1 rounded-full ${m.badge}">${m.name}</span>`;
+            return `<span class="text-xs font-bold px-3 py-1 rounded-full ${m.badge}">${m.name}</span>`;
           })
           .join("");
 
@@ -1381,26 +1450,44 @@
           totalCost += m.price;
 
           const latlngs = m.coords.map((c) => [c.lat, c.lng]);
+
+          // Vẽ đường nối chuyển tiếp giữa các Module
           if (prevLastCoord && key !== "CORE") {
             L.polyline([prevLastCoord, latlngs[0]], {
+              color: "#FFFFFF",
+              weight: 7,
+              opacity: 0.85,
+            }).addTo(activeLayers);
+            L.polyline([prevLastCoord, latlngs[0]], {
               color: m.color,
-              weight: 3,
-              dashArray: "5, 8",
-              opacity: 0.75,
+              weight: 3.5,
+              dashArray: "6, 8",
+              opacity: 0.95,
             }).addTo(activeLayers);
           }
           prevLastCoord = latlngs[latlngs.length - 1];
           currentBounds.push(...latlngs);
 
-          // Vẽ đường đi chính
+          // Lớp nền trắng bao ngoài giúp đường Line nổi bật tuyệt đối trên mọi nền bản đồ
           L.polyline(latlngs, {
-            color: m.color,
-            weight: key === "CORE" ? 4.5 : 3.5,
-            dashArray: key === "CORE" ? null : "8, 6",
+            color: "#FFFFFF",
+            weight: key === "CORE" ? 9 : 8,
             opacity: 0.9,
+            lineCap: "round",
+            lineJoin: "round",
           }).addTo(activeLayers);
 
-          // Vẽ từng điểm kèm Popup ảnh lớn
+          // Đường Line màu chính của từng gói
+          L.polyline(latlngs, {
+            color: m.color,
+            weight: key === "CORE" ? 5 : 4,
+            dashArray: key === "CORE" ? null : "8, 7",
+            opacity: 1,
+            lineCap: "round",
+            lineJoin: "round",
+          }).addTo(activeLayers);
+
+          // Vẽ các nút điểm đến (Marker)
           m.coords.forEach((pt) => {
             const fallbackUrl = createFallbackSVG(pt.name, m.color);
             const popupHTML = `
@@ -1413,10 +1500,10 @@
                   ${pt.time}
                 </span>
               </div>
-              <div class="p-4 space-y-2">
+              <div class="p-5 space-y-2">
                 <div class="font-serif-display font-bold text-lg text-stone-900 leading-snug">${pt.name}</div>
                 <p class="text-xs text-stone-600 leading-relaxed">${pt.desc}</p>
-                <div class="pt-2.5 flex justify-between items-center border-t border-stone-100 text-xs font-medium text-stone-400">
+                <div class="pt-3 flex justify-between items-center border-t border-stone-200/70 text-xs font-medium text-stone-400">
                   <span class="tabular-nums">${pt.lat.toFixed(4)}, ${pt.lng.toFixed(4)}</span>
                   <a href="https://www.google.com/maps?q=${pt.lat},${pt.lng}" target="_blank" class="text-stone-900 font-semibold hover:underline">Mở Google Maps ↗</a>
                 </div>
@@ -1425,10 +1512,10 @@
           `;
 
             const marker = L.circleMarker([pt.lat, pt.lng], {
-              radius: 8,
+              radius: 9,
               fillColor: m.color,
               color: "#FFFFFF",
-              weight: 3,
+              weight: 3.5,
               fillOpacity: 1,
             })
               .bindPopup(popupHTML)
@@ -1437,7 +1524,7 @@
             markerRegistry[pt.id] = marker;
           });
 
-          // Tạo thẻ Lịch trình (Editorial Cards)
+          // Tạo thẻ Lịch trình trong suốt
           m.days.forEach((d) => {
             const spotButtons = (d.spots || [])
               .map((sid) => {
@@ -1445,30 +1532,30 @@
                 if (!sp) return "";
                 const fb = createFallbackSVG(sp.name, sp.color);
                 return `
-              <button onclick="flyToSpot('${sp.id}')" class="group flex items-center gap-3.5 w-full text-left p-2.5 rounded-2xl bg-stone-50/90 hover:bg-stone-100 border border-stone-200/70 transition">
+              <button onclick="flyToSpot('${sp.id}')" class="group flex items-center gap-3.5 w-full text-left p-3 rounded-2xl bg-white/55 hover:bg-white/90 border border-white transition shadow-sm">
                 <img src="${sp.img}" onerror="this.onerror=null;this.src='${fb}';" class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm" />
                 <div class="min-w-0 flex-1">
                   <div class="text-sm font-bold text-stone-900 group-hover:text-[#0F4C81] truncate transition">${sp.name}</div>
                   <div class="text-xs text-stone-500 line-clamp-1 mt-0.5">${sp.desc}</div>
                 </div>
-                <span class="text-xs font-semibold text-stone-400 group-hover:text-stone-900 pr-1">Xem ↗</span>
+                <span class="text-xs font-semibold text-stone-400 group-hover:text-stone-900 pr-1">Bản đồ ↗</span>
               </button>
             `;
               })
               .join("");
 
             timelineHTML += `
-            <div class="liquid-glass rounded-[28px] p-6 flex flex-col justify-between space-y-5 hover:shadow-lg transition">
+            <div class="liquid-glass rounded-[32px] p-7 sm:p-8 flex flex-col justify-between space-y-6 hover:bg-white/60 transition">
               <div>
-                <div class="flex justify-between items-center mb-3">
-                  <span class="text-xs font-bold uppercase tracking-wider text-stone-400">${d.day}</span>
-                  <span class="text-xs font-semibold px-3 py-1 rounded-full ${m.badge}">${d.module}</span>
+                <div class="flex justify-between items-center mb-3.5">
+                  <span class="text-xs font-bold uppercase tracking-widest text-stone-400">${d.day}</span>
+                  <span class="text-xs font-bold px-3.5 py-1 rounded-full ${m.badge}">${d.module}</span>
                 </div>
-                <h4 class="font-serif-display text-xl font-bold text-stone-900 mb-2">${d.title}</h4>
-                <p class="text-sm text-stone-600 leading-relaxed">${d.items}</p>
+                <h4 class="font-serif-display text-2xl font-bold text-stone-900 mb-2.5">${d.title}</h4>
+                <p class="text-sm sm:text-base text-stone-600 leading-relaxed">${d.items}</p>
               </div>
-              <div class="space-y-2 pt-3 border-t border-stone-200/60">
-                <div class="text-[11px] font-bold uppercase tracking-wider text-stone-400">Điểm khảo sát trong ngày:</div>
+              <div class="space-y-2.5 pt-4 border-t border-stone-900/10">
+                <div class="text-[11px] font-bold uppercase tracking-widest text-stone-400">Điểm khảo sát trong ngày:</div>
                 ${spotButtons}
               </div>
             </div>
@@ -1476,7 +1563,7 @@
           });
         });
 
-        fitAllActiveBounds();
+        setTimeout(() => fitAllActiveBounds(), 100);
 
         // Cập nhật tổng số ngày và chi phí
         const startDay = selected.includes("A") ? "06/12" : "07/12";
@@ -1558,7 +1645,7 @@
         const realName = nameInput.value.trim();
         if (!realName) {
           statusEl.className =
-            "p-4 rounded-2xl text-sm font-medium text-center bg-rose-50 text-rose-800 border border-rose-200";
+            "p-4 rounded-2xl text-sm font-medium text-center bg-rose-50/90 text-rose-800 border border-rose-200";
           statusEl.innerText =
             "Vui lòng nhập họ và tên của bạn trước khi xác nhận.";
           statusEl.classList.remove("hidden");
@@ -1616,8 +1703,8 @@
         noteInput.value = "";
 
         statusEl.className =
-          "p-4 rounded-2xl text-sm font-medium text-center bg-emerald-50 text-emerald-900 border border-emerald-200";
-        statusEl.innerText = `Đã ghi nhận thành công mã ${votePayload.id} (${votePayload.maskedName}) — Lộ trình: ${mods.join(" + ")}`;
+          "p-4 rounded-2xl text-sm font-medium text-center bg-emerald-50/90 text-emerald-900 border border-emerald-200";
+        statusEl.innerText = `Đã ghi nhận mã ${votePayload.id} (${votePayload.maskedName}) — Lộ trình: ${mods.join(" + ")}`;
         statusEl.classList.remove("hidden");
 
         updateVoteBadgeCount();
@@ -1660,10 +1747,10 @@
 
         const meta = [
           { k: "CORE", label: "Hà Nội (Chính)", color: "bg-[#0F4C81]" },
-          { k: "A", label: "A: Tam Đảo", color: "bg-[#6D4C7D]" },
-          { k: "B", label: "B: Ninh Bình", color: "bg-[#B86B35]" },
-          { k: "C", label: "C: Cát Bà", color: "bg-[#1B6B53]" },
-          { k: "D", label: "D: Hạ Long", color: "bg-[#A63A50]" },
+          { k: "A", label: "A: Tam Đảo", color: "bg-[#7C3AED]" },
+          { k: "B", label: "B: Ninh Bình", color: "bg-[#D97706]" },
+          { k: "C", label: "C: Cát Bà", color: "bg-[#059669]" },
+          { k: "D", label: "D: Hạ Long", color: "bg-[#E11D48]" },
         ];
 
         const totalVoters = Math.max(votes.length, 1);
@@ -1678,12 +1765,12 @@
             else if (c >= 16) vehicleHint = "Đề xuất: Xe 29 chỗ";
 
             return `
-          <div class="p-4 rounded-2xl bg-white border border-stone-200/90 space-y-2 shadow-sm">
+          <div class="p-4 rounded-2xl bg-white/75 border border-white space-y-2 shadow-sm">
             <div class="flex justify-between items-center text-xs">
               <span class="font-bold text-stone-700">${item.label}</span>
               <span class="font-bold text-stone-900 tabular-nums">${c} người</span>
             </div>
-            <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+            <div class="w-full h-2 bg-stone-200/70 rounded-full overflow-hidden">
               <div class="${item.color} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
             </div>
             <div class="text-[11px] text-stone-500">${vehicleHint}</div>
@@ -1695,24 +1782,40 @@
         const tbody = document.getElementById("votes-table-body");
         tbody.innerHTML = votes
           .map((v) => {
-            const displayedName = isAdminUnlocked
-              ? `<span class="text-stone-900 font-bold">${v.realName || v.maskedName}</span>`
-              : `<span class="text-stone-600 font-medium">${v.maskedName || maskName(v.realName)}</span>`;
+            const nameToShow = v.realName || v.maskedName || "Thành viên";
 
+            // KHI CHƯA NHẬP MÃ PIN: Chỉ hiện Mã, Tên đã đăng ký và Thời gian
+            if (!isAdminUnlocked) {
+              return `
+            <tr class="hover:bg-white/60 transition">
+              <td class="py-4 px-5 text-xs font-semibold text-stone-400 tabular-nums">${v.id || "—"}</td>
+              <td class="py-4 px-5 font-semibold text-stone-800">
+                ${nameToShow}
+                <span class="ml-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full">Đã ghi danh</span>
+              </td>
+              <td class="py-4 px-5 text-xs text-stone-400 italic">🔒 Nhập PIN để xem</td>
+              <td class="py-4 px-5 text-xs text-stone-400 italic">🔒 Nhập PIN để xem</td>
+              <td class="py-4 px-5 text-xs text-stone-400 italic">🔒 Nhập PIN để xem</td>
+              <td class="py-4 px-5 text-right text-xs text-stone-400 tabular-nums">${v.timestamp || ""}</td>
+            </tr>
+          `;
+            }
+
+            // KHI ĐÃ NHẬP ĐÚNG MÃ PIN: Hiện đầy đủ 100% thông tin
             const modBadges = (v.modules || [])
               .map((m) => {
-                return `<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-stone-100 text-stone-700 border border-stone-200">${m}</span>`;
+                return `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/80 text-stone-700 border border-stone-200/80">${m}</span>`;
               })
               .join(" ");
 
             return `
-          <tr class="hover:bg-stone-50/80 transition">
-            <td class="py-3.5 px-4 text-xs font-semibold text-stone-400 tabular-nums">${v.id || "—"}</td>
-            <td class="py-3.5 px-4">${displayedName}</td>
-            <td class="py-3.5 px-4 space-x-1">${modBadges}</td>
-            <td class="py-3.5 px-4 font-bold text-stone-900 tabular-nums">${v.totalCost || ""}</td>
-            <td class="py-3.5 px-4 text-stone-500">${v.note || "—"}</td>
-            <td class="py-3.5 px-4 text-right text-xs text-stone-400 tabular-nums">${v.timestamp || ""}</td>
+          <tr class="hover:bg-white/60 transition">
+            <td class="py-4 px-5 text-xs font-semibold text-stone-400 tabular-nums">${v.id || "—"}</td>
+            <td class="py-4 px-5 text-stone-900 font-bold">${nameToShow}</td>
+            <td class="py-4 px-5 space-x-1">${modBadges}</td>
+            <td class="py-4 px-5 font-bold text-stone-900 tabular-nums">${v.totalCost || ""}</td>
+            <td class="py-4 px-5 text-stone-500">${v.note || "—"}</td>
+            <td class="py-4 px-5 text-right text-xs text-stone-400 tabular-nums">${v.timestamp || ""}</td>
           </tr>
         `;
           })
@@ -1732,9 +1835,7 @@
               "text-sm font-bold text-emerald-700";
             fetchVotesFromDB();
           } else {
-            alert(
-              "Mã PIN chưa chính xác (Mã PIN mặc định để thử nghiệm là: 2026).",
-            );
+            alert("Mã PIN chưa chính xác.");
           }
           return;
         }
@@ -1766,8 +1867,12 @@
         document.getElementById("header-vote-count").innerText = votes.length;
       }
 
+      // Khởi chạy ngay lập tức và đồng bộ lại kích thước bản đồ khi tải xong
       renderApp();
       updateVoteBadgeCount();
+      window.addEventListener("load", () => {
+        setTimeout(() => fitAllActiveBounds(), 250);
+      });
     </script>
   </body>
 </html>
