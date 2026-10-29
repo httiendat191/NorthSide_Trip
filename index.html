@@ -1198,75 +1198,53 @@
         },
       };
 
-      // =========================================================================
-      // 2. KHỞI TẠO BẢN ĐỒ SÁNG SANG TRỌNG (100% KHÔNG CẦN API KEY)
-      // =========================================================================
-      // Lớp mặc định: CartoDB Voyager (Tông màu kem sáng hiện đại như Apple Maps)
-      const voyagerLightLayer = L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        {
-          maxZoom: 19,
-          subdomains: "abcd",
-          attribution: "&copy; OpenStreetMap &copy; CARTO",
-        },
-      );
-
-      // Lớp 2: OpenStreetMap Tiêu chuẩn
-      const osmStandardLayer = L.tileLayer(
-        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          maxZoom: 19,
-          attribution: "&copy; OpenStreetMap contributors",
-        },
-      );
-
-      // Lớp 3: Ảnh vệ tinh Esri World Imagery
-      const esriSatelliteLayer = L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        {
-          maxZoom: 18,
-          attribution: "Tiles &copy; Esri",
-        },
-      );
-
-      const map = L.map("map", {
-        center: [20.85, 106.15],
-        zoom: 8,
-        layers: [voyagerLightLayer],
-        scrollWheelZoom: false, // Tránh bị kẹt cuộn trang khi người dùng lướt web dọc
-      });
-
-      // Bật zoom cuộn chuột khi người dùng click vào bản đồ
-      map.on("click", () => map.scrollWheelZoom.enable());
-      map.on("mouseout", () => map.scrollWheelZoom.disable());
-
-      L.control
-        .layers(
-          {
-            "Bản đồ Sáng Du lịch (Mặc định)": voyagerLightLayer,
-            "Bản đồ Hành chính Chi tiết": osmStandardLayer,
-            "Ảnh Vệ tinh Thực tế": esriSatelliteLayer,
-          },
-          null,
-          { position: "topright" },
-        )
-        .addTo(map);
-
-      let activeLayers = L.layerGroup().addTo(map);
-      let markerRegistry = {};
-      let currentBounds = [];
-
-      // Ảnh dự phòng tông sáng thanh lịch nếu mất kết nối ảnh ngoài
-      function createFallbackSVG(title, color) {
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
-        <rect width="600" height="360" fill="#F4F3EE"/>
-        <circle cx="300" cy="150" r="42" fill="${color}" fill-opacity="0.14"/>
-        <circle cx="300" cy="150" r="10" fill="${color}"/>
-        <text x="300" y="235" text-anchor="middle" fill="#141413" font-family="Georgia, serif" font-size="22" font-weight="bold">${title}</text>
-        <text x="300" y="265" text-anchor="middle" fill="#8C8B85" font-family="sans-serif" font-size="14">Điểm khảo sát Hành trình Bắc Bộ</text>
-      </svg>`;
-        return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+    // =========================================================================
+    // 2. KHỞI TẠO BẢN ĐỒ SÁNG SANG TRỌNG (100% KHÔNG CẦN API KEY)
+    // =========================================================================
+    // Tự động chèn bộ lọc màu Kem ấm (Editorial Warm Filter) cho OpenStreetMap
+    const mapFilterStyle = document.createElement('style');
+    mapFilterStyle.innerHTML = `
+      .editorial-light-tiles {
+        filter: sepia(14%) saturate(58%) contrast(93%) brightness(103%) hue-rotate(-5deg);
       }
+    `;
+    document.head.appendChild(mapFilterStyle);
+
+    // Lớp 1 (Mặc định): OpenStreetMap chính thức + Phủ màu Kem sang trọng (Không bao giờ đòi API Key)
+    const editorialOsmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      className: 'editorial-light-tiles',
+      attribution: '&copy; OpenStreetMap contributors'
+    });
+
+    // Lớp 2: Bản đồ Địa hình & Kiến trúc Sáng (Esri World Topo - Miễn phí 100%, không cần Key)
+    const esriTopoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri'
+    });
+
+    // Lớp 3: Ảnh vệ tinh Esri World Imagery (Miễn phí 100%, không cần Key)
+    const esriSatelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      attribution: 'Tiles &copy; Esri'
+    });
+
+    const map = L.map('map', {
+      center: [20.85, 106.15],
+      zoom: 8,
+      layers: [editorialOsmLayer],
+      scrollWheelZoom: false
+    });
+
+    // Bật zoom cuộn chuột khi người dùng click vào bản đồ
+    map.on('click', () => map.scrollWheelZoom.enable());
+    map.on('mouseout', () => map.scrollWheelZoom.disable());
+
+    L.control.layers({
+      "Bản đồ Kem Sáng Editorial (Mặc định)": editorialOsmLayer,
+      "Bản đồ Địa hình Sáng (Esri Topo)": esriTopoLayer,
+      "Ảnh Vệ tinh Thực tế (Esri)": esriSatelliteLayer
+    }, null, { position: 'topright' }).addTo(map);
 
       // =========================================================================
       // 3. LOGIC RÀNG BUỘC CHẶNG LIÊN TUYẾN (B <- C <- D)
