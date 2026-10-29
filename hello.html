@@ -1,0 +1,1795 @@
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hành Trình Bắc Bộ 2026 — Cổng Thiết Kế Lộ Trình</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-canvas: #f6f5f0;
+        --ink-primary: #141413;
+        --ink-secondary: #575652;
+        --ink-muted: #8c8b85;
+      }
+
+      body {
+        background-color: var(--bg-canvas);
+        background-image:
+          radial-gradient(
+            at 15% 10%,
+            rgba(212, 228, 220, 0.45) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 85% 25%,
+            rgba(238, 225, 209, 0.4) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 50% 80%,
+            rgba(219, 228, 238, 0.35) 0px,
+            transparent 55%
+          );
+        background-attachment: fixed;
+        color: var(--ink-primary);
+        font-family:
+          "Plus Jakarta Sans",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .font-serif-display {
+        font-family: "Playfair Display", Georgia, serif;
+      }
+
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Hiệu ứng Liquid Glass (iOS 27 Inspired) */
+      .liquid-glass {
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(28px) saturate(180%);
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.92);
+        box-shadow:
+          0 20px 45px -15px rgba(20, 20, 19, 0.06),
+          0 4px 12px -2px rgba(20, 20, 19, 0.03),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+      }
+
+      .liquid-pill-nav {
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(24px) saturate(190%);
+        -webkit-backdrop-filter: blur(24px) saturate(190%);
+        border: 1px solid rgba(20, 20, 19, 0.08);
+        box-shadow: 0 12px 32px -8px rgba(20, 20, 19, 0.08);
+      }
+
+      /* Thẻ chọn Module tương tác */
+      .module-card {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1.5px solid rgba(20, 20, 19, 0.07);
+        border-radius: 28px;
+        transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 8px 24px -6px rgba(20, 20, 19, 0.03);
+      }
+      .module-card:hover {
+        background: rgba(255, 255, 255, 0.94);
+        transform: translateY(-2px);
+        box-shadow: 0 18px 36px -10px rgba(20, 20, 19, 0.07);
+      }
+      .module-card.active-card {
+        background: #ffffff;
+        border-color: #141413;
+        box-shadow: 0 20px 40px -12px rgba(20, 20, 19, 0.1);
+      }
+
+      /* Công tắc gạt chuẩn iOS */
+      .ios-switch {
+        position: relative;
+        width: 52px;
+        height: 30px;
+        background: #e2e1dc;
+        border-radius: 999px;
+        transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        flex-shrink: 0;
+      }
+      .ios-switch::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 24px;
+        height: 24px;
+        background: #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      input:checked + .ios-switch {
+        background: #141413;
+      }
+      input:checked + .ios-switch::after {
+        transform: translateX(22px);
+      }
+
+      /* Nút bấm chính (Tactile CTA Button) */
+      .btn-luxury {
+        background: linear-gradient(180deg, #232321 0%, #141413 100%);
+        color: #ffffff;
+        border-radius: 9999px;
+        box-shadow:
+          0 14px 28px -8px rgba(20, 20, 19, 0.35),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+        transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .btn-luxury:hover {
+        background: linear-gradient(180deg, #2e2e2b 0%, #1c1c1a 100%);
+        transform: translateY(-2px);
+        box-shadow:
+          0 20px 34px -8px rgba(20, 20, 19, 0.42),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+      }
+      .btn-luxury:active {
+        transform: translateY(0) scale(0.985);
+      }
+
+      /* Tùy chỉnh Bản đồ & Popup sang trọng */
+      .leaflet-container {
+        background: #eae8e1;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      .leaflet-popup-content-wrapper {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(16px);
+        color: #141413 !important;
+        border-radius: 24px !important;
+        padding: 0 !important;
+        overflow: hidden;
+        border: 1px solid rgba(20, 20, 19, 0.08);
+        box-shadow: 0 24px 48px -12px rgba(20, 20, 19, 0.18) !important;
+      }
+      .leaflet-popup-content {
+        margin: 0 !important;
+        width: 300px !important;
+      }
+      .leaflet-popup-tip {
+        background: rgba(255, 255, 255, 0.95) !important;
+      }
+      .leaflet-container a.leaflet-popup-close-button {
+        color: #141413 !important;
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(8px);
+        border-radius: 50%;
+        width: 30px !important;
+        height: 30px !important;
+        top: 12px !important;
+        right: 12px !important;
+        line-height: 28px !important;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      }
+      .leaflet-control-layers {
+        border-radius: 16px !important;
+        border: 1px solid rgba(20, 20, 19, 0.08) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+        padding: 6px 10px !important;
+        font-size: 13px !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen selection:bg-stone-900 selection:text-white">
+    <!-- THANH ĐIỀU HƯỚNG NỔI (FLOATING GLASS PILL) -->
+    <header class="sticky top-4 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
+      <nav
+        class="liquid-pill-nav rounded-full px-5 py-3 flex items-center justify-between gap-4"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center font-serif-display font-semibold text-lg"
+          >
+            B
+          </div>
+          <div>
+            <span
+              class="text-sm font-bold tracking-tight text-stone-900 block leading-none"
+              >Hành Trình Bắc Bộ</span
+            >
+            <span class="text-xs text-stone-500 mt-0.5 block"
+              >06/12 – 16/12/2026</span
+            >
+          </div>
+        </div>
+
+        <div
+          class="hidden md:flex items-center gap-7 text-sm font-medium text-stone-600"
+        >
+          <a href="#sec-config" class="hover:text-stone-950 transition"
+            >1. Thiết kế Chặng đi</a
+          >
+          <a href="#sec-map" class="hover:text-stone-950 transition"
+            >2. Bản đồ Không gian</a
+          >
+          <a href="#sec-itinerary" class="hover:text-stone-950 transition"
+            >3. Lịch trình & Điểm đến</a
+          >
+        </div>
+
+        <button
+          onclick="openDashboardModal()"
+          class="flex items-center gap-2.5 bg-white hover:bg-stone-50 text-stone-900 border border-stone-200/90 px-4 py-2 rounded-full text-sm font-semibold shadow-sm transition active:scale-95"
+        >
+          <span>Danh sách Đoàn</span>
+          <span
+            id="header-vote-count"
+            class="bg-stone-900 text-white text-xs px-2 py-0.5 rounded-full tabular-nums"
+            >0</span
+          >
+        </button>
+      </nav>
+    </header>
+
+    <!-- PHẦN MỞ ĐẦU (EDITORIAL HERO) -->
+    <section class="max-w-5xl mx-auto px-4 sm:px-8 pt-12 pb-10 text-center">
+      <div
+        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 border border-stone-200/80 text-xs font-semibold uppercase tracking-widest text-stone-600 mb-5 shadow-sm"
+      >
+        Chuyến Khảo Sát & Trải Nghiệm Thực Địa • Tháng 12/2026
+      </div>
+      <h1
+        class="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-stone-900 tracking-tight leading-[1.12]"
+      >
+        Tùy biến lộ trình của bạn,<br class="hidden sm:inline" />
+        <span class="italic font-normal text-stone-600"
+          >rõ ràng trong từng điểm chạm.</span
+        >
+      </h1>
+      <p
+        class="mt-5 text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed"
+      >
+        Bên cạnh chặng chính tại Hà Nội, bạn có thể linh hoạt ghép thêm các hành
+        trình mở rộng đến Tam Đảo, Ninh Bình, Cát Bà và Vịnh Hạ Long. Chi phí và
+        lịch trình sẽ tự động đồng bộ theo lựa chọn của bạn.
+      </p>
+    </section>
+
+    <!-- PHẦN 1: BỘ CHỌN CHẶNG & TÓM TẮT NGÂN SÁCH (ASYMMETRIC GRID) -->
+    <section id="sec-config" class="max-w-7xl mx-auto px-4 sm:px-8 py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- CỘT TRÁI (7 PHẦN): DANH SÁCH CÁC CHẶNG (MODULES) -->
+        <div class="lg:col-span-7 space-y-5">
+          <div class="flex items-end justify-between px-1">
+            <div>
+              <span
+                class="text-xs font-bold uppercase tracking-widest text-stone-400"
+                >Bước 01</span
+              >
+              <h2
+                class="font-serif-display text-2xl sm:text-3xl font-semibold text-stone-900 mt-0.5"
+              >
+                Lựa chọn các chặng tham gia
+              </h2>
+            </div>
+            <button
+              onclick="resetModules()"
+              class="text-sm font-medium text-stone-500 hover:text-stone-900 underline underline-offset-4 transition"
+            >
+              Đặt lại mặc định
+            </button>
+          </div>
+
+          <!-- Thông báo tự động nối tuyến -->
+          <div
+            id="chain-notice"
+            class="hidden p-4 rounded-2xl bg-amber-50/90 border border-amber-200 text-sm text-amber-900 leading-relaxed shadow-sm"
+          ></div>
+
+          <!-- CHẶNG CỐ ĐỊNH: CORE HÀ NỘI -->
+          <div
+            class="module-card active-card p-6 sm:p-7 relative overflow-hidden"
+          >
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-stone-100"
+            >
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-[#0F4C81]"></span>
+                  <span
+                    class="text-xs font-bold uppercase tracking-wider text-[#0F4C81] bg-[#0F4C81]/10 px-3 py-1 rounded-full"
+                  >
+                    Chặng Cố Định • 07/12 – 11/12 (5N4Đ)
+                  </span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-stone-900">
+                  Chặng Chính: Hà Nội Study Trip
+                </h3>
+              </div>
+              <div class="sm:text-right">
+                <div class="text-xs text-stone-400 font-medium">
+                  Chi phí nền
+                </div>
+                <div class="text-2xl font-bold text-stone-900 tabular-nums">
+                  5.985.000₫
+                </div>
+              </div>
+            </div>
+            <p class="mt-4 text-base text-stone-600 leading-relaxed">
+              Khảo sát cấu trúc đô thị và di sản Thủ đô: Bảo tàng Hà Nội, tuyến
+              Metro Cát Linh, Văn Miếu, khu phố cổ Hoàn Kiếm – 22 Hàng Buồm và
+              Bảo tàng Lịch sử Quân sự mới.
+            </p>
+          </div>
+
+          <!-- CHẶNG MỞ RỘNG A: TAM ĐẢO -->
+          <label
+            id="card-A"
+            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div class="space-y-2 pr-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#6D4C7D]"></span>
+                  <span
+                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                  >
+                    Khởi động sớm • 06/12 – 07/12
+                  </span>
+                </div>
+                <h3 class="text-xl font-bold text-stone-900">
+                  Mở rộng A: Thị trấn Sương mù Tam Đảo
+                </h3>
+                <p class="text-base text-stone-600 leading-relaxed">
+                  Bay sớm ngày 06/12 và đi thẳng từ Nội Bài lên cao nguyên Tam
+                  Đảo. Thưởng thức cà phê Quán Gió, săn mây Cổng Trời, Nhà thờ
+                  Đá và tiệc nướng BBQ tối trước khi về Hà Nội hội quân.
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-3 shrink-0">
+                <input
+                  type="checkbox"
+                  id="mod-A"
+                  onchange="toggleModule('A')"
+                  class="sr-only"
+                />
+                <div class="ios-switch"></div>
+                <div class="text-right mt-1">
+                  <span class="text-xs text-stone-400 block">Cộng thêm</span>
+                  <span class="text-lg font-bold text-stone-900 tabular-nums"
+                    >+1.250.000₫</span
+                  >
+                </div>
+              </div>
+            </div>
+          </label>
+
+          <!-- CHẶNG MỞ RỘNG B: NINH BÌNH -->
+          <label
+            id="card-B"
+            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div class="space-y-2 pr-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#B86B35]"></span>
+                  <span
+                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                  >
+                    Nối tiếp Hà Nội • 11/12 – 13/12
+                  </span>
+                </div>
+                <h3 class="text-xl font-bold text-stone-900">
+                  Mở rộng B: Di sản Tràng An – Ninh Bình
+                </h3>
+                <p class="text-base text-stone-600 leading-relaxed">
+                  Rời Hà Nội trưa 11/12 về cố đô. Ngồi đò chèo tay xuyên quần
+                  thể danh thắng Tràng An, chinh phục 500 bậc đá đỉnh Hang Múa
+                  ngắm hoàng hôn Tam Cốc và dạo Phố cổ Hoa Lư về đêm.
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-3 shrink-0">
+                <input
+                  type="checkbox"
+                  id="mod-B"
+                  onchange="toggleModule('B')"
+                  class="sr-only"
+                />
+                <div class="ios-switch"></div>
+                <div class="text-right mt-1">
+                  <span class="text-xs text-stone-400 block">Cộng thêm</span>
+                  <span class="text-lg font-bold text-stone-900 tabular-nums"
+                    >+2.290.000₫</span
+                  >
+                </div>
+              </div>
+            </div>
+          </label>
+
+          <!-- CHẶNG MỞ RỘNG C: CÁT BÀ - HẢI PHÒNG -->
+          <label
+            id="card-C"
+            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div class="space-y-2 pr-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#1B6B53]"></span>
+                  <span
+                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                  >
+                    Nối tiếp Ninh Bình • 13/12 – 15/12
+                  </span>
+                </div>
+                <h3 class="text-xl font-bold text-stone-900">
+                  Mở rộng C: Hải Phòng – Đảo Cát Bà & Vịnh Lan Hạ
+                </h3>
+                <p class="text-base text-stone-600 leading-relaxed">
+                  Khởi hành từ Ninh Bình đi Hải Phòng thưởng thức ẩm thực Đất
+                  Cảng, sau đó ra đảo Cát Bà. Trải nghiệm du thuyền trên Vịnh
+                  Lan Hạ, chèo thuyền Kayak và đi bộ xuyên rừng Vườn Quốc gia.
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-3 shrink-0">
+                <input
+                  type="checkbox"
+                  id="mod-C"
+                  onchange="toggleModule('C')"
+                  class="sr-only"
+                />
+                <div class="ios-switch"></div>
+                <div class="text-right mt-1">
+                  <span class="text-xs text-stone-400 block">Cộng thêm</span>
+                  <span class="text-lg font-bold text-stone-900 tabular-nums"
+                    >+1.760.000₫</span
+                  >
+                </div>
+              </div>
+            </div>
+          </label>
+
+          <!-- CHẶNG MỞ RỘNG D: HẠ LONG -->
+          <label
+            id="card-D"
+            class="module-card p-6 sm:p-7 block cursor-pointer select-none"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div class="space-y-2 pr-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-[#A63A50]"></span>
+                  <span
+                    class="text-xs font-semibold text-stone-500 bg-stone-100 px-3 py-1 rounded-full"
+                  >
+                    Nối tiếp Cát Bà • 15/12 – 16/12
+                  </span>
+                </div>
+                <h3 class="text-xl font-bold text-stone-900">
+                  Mở rộng D: Vịnh Hạ Long – Quảng Ninh
+                </h3>
+                <p class="text-base text-stone-600 leading-relaxed">
+                  Đi phà xuyên vịnh từ bến Gia Luận (Cát Bà) sang đảo Tuần Châu.
+                  Tham quan Vịnh Hạ Long tuyến 2 (Hang Sửng Sốt – Đảo Titop),
+                  khảo sát kiến trúc Bảo tàng Quảng Ninh và bay về từ sân bay
+                  Cát Bi.
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-3 shrink-0">
+                <input
+                  type="checkbox"
+                  id="mod-D"
+                  onchange="toggleModule('D')"
+                  class="sr-only"
+                />
+                <div class="ios-switch"></div>
+                <div class="text-right mt-1">
+                  <span class="text-xs text-stone-400 block">Cộng thêm</span>
+                  <span class="text-lg font-bold text-stone-900 tabular-nums"
+                    >+1.500.000₫</span
+                  >
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <!-- CỘT PHẢI (5 PHẦN): THẺ TỔNG HỢP NGÂN SÁCH & ĐĂNG KÝ (STICKY GLASS CARD) -->
+        <div class="lg:col-span-5 lg:sticky lg:top-24">
+          <div class="liquid-glass rounded-[32px] p-7 sm:p-8 space-y-6">
+            <div>
+              <span
+                class="text-xs font-bold uppercase tracking-widest text-stone-400"
+                >Bước 02</span
+              >
+              <h3
+                class="font-serif-display text-2xl sm:text-3xl font-semibold text-stone-900 mt-0.5"
+              >
+                Bảng Tóm tắt & Ngân sách
+              </h3>
+              <p class="text-sm text-stone-500 mt-1">
+                Tự động tính toán dựa trên các chặng bạn đã bật.
+              </p>
+            </div>
+
+            <!-- Các chặng đang chọn -->
+            <div class="space-y-3 pt-2 border-t border-stone-200/70">
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-stone-500">Thời gian hành trình</span>
+                <span
+                  id="total-days"
+                  class="font-bold text-stone-900 tabular-nums"
+                  >5 ngày (07/12 – 11/12)</span
+                >
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-stone-500">Các chặng tham gia</span>
+                <div
+                  id="selected-pills"
+                  class="flex flex-wrap gap-1.5 justify-end"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Chi tiết chi phí -->
+            <div
+              class="bg-stone-100/80 rounded-2xl p-5 space-y-3 border border-stone-200/60"
+            >
+              <div class="flex justify-between text-sm text-stone-600">
+                <span>Chi phí theo chặng đã chọn</span>
+                <span
+                  id="base-cost"
+                  class="font-semibold text-stone-900 tabular-nums"
+                  >5.985.000₫</span
+                >
+              </div>
+              <div class="flex justify-between text-sm text-stone-600">
+                <span>Quỹ dự phòng phát sinh (10%)</span>
+                <span
+                  id="buffer-cost"
+                  class="font-medium text-stone-600 tabular-nums"
+                  >598.500₫</span
+                >
+              </div>
+              <div
+                class="pt-3 border-t border-stone-200 flex justify-between items-baseline"
+              >
+                <span class="text-sm font-bold text-stone-900"
+                  >Tổng ngân sách chuẩn bị</span
+                >
+                <span
+                  id="final-cost"
+                  class="text-3xl font-bold text-stone-900 tabular-nums tracking-tight"
+                  >6.583.500₫</span
+                >
+              </div>
+            </div>
+
+            <!-- Biểu mẫu xác nhận lộ trình (Ẩn danh công khai) -->
+            <div class="space-y-4 pt-2">
+              <div class="flex items-center justify-between">
+                <label
+                  for="member-name"
+                  class="text-sm font-bold text-stone-900"
+                  >Ghi danh lộ trình của bạn</label
+                >
+                <span
+                  class="text-xs text-stone-500 bg-stone-200/70 px-2.5 py-0.5 rounded-full"
+                  >Tự động ẩn danh trên Web</span
+                >
+              </div>
+
+              <div class="space-y-3">
+                <input
+                  type="text"
+                  id="member-name"
+                  placeholder="Nhập họ và tên đầy đủ của bạn..."
+                  class="w-full bg-white border border-stone-300/90 rounded-2xl px-4 py-3.5 text-base text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 transition"
+                />
+
+                <input
+                  type="text"
+                  id="member-note"
+                  placeholder="Ghi chú thêm (VD: Ăn chay, giờ bay dự kiến...)"
+                  class="w-full bg-white border border-stone-300/90 rounded-2xl px-4 py-3.5 text-base text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 transition"
+                />
+              </div>
+
+              <button
+                id="btn-submit-vote"
+                onclick="submitVote()"
+                class="btn-luxury w-full py-4 px-6 text-base font-semibold flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>Xác nhận Lộ trình này</span>
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  ></path>
+                </svg>
+              </button>
+
+              <p class="text-xs text-stone-500 leading-relaxed text-center">
+                Tên thật của bạn chỉ hiển thị với Ban Tổ Chức để sắp xếp xe và
+                phòng nghỉ. Trên bảng công khai, tên sẽ được mã hóa ẩn danh.
+              </p>
+
+              <div
+                id="vote-status"
+                class="hidden p-4 rounded-2xl text-sm font-medium text-center"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: BẢN ĐỒ KHÔNG GIAN TƯƠNG TÁC (APPLE MAPS / VOYAGER LIGHT STYLE) -->
+    <section id="sec-map" class="max-w-7xl mx-auto px-4 sm:px-8 py-12">
+      <div
+        class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 px-1"
+      >
+        <div>
+          <span
+            class="text-xs font-bold uppercase tracking-widest text-stone-400"
+            >Bước 03 • Trực quan hóa Không gian</span
+          >
+          <h2
+            class="font-serif-display text-3xl sm:text-4xl font-semibold text-stone-900 mt-1"
+          >
+            Bản đồ Hành trình & Điểm khảo sát
+          </h2>
+          <p class="text-base text-stone-600 mt-1">
+            Nhấp vào từng điểm đánh dấu trên bản đồ để xem hình ảnh thực tế và
+            thông tin chi tiết.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            onclick="fitAllActiveBounds()"
+            class="bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 px-4 py-2.5 rounded-full text-sm font-semibold shadow-sm transition"
+          >
+            Căn chỉnh toàn tuyến
+          </button>
+        </div>
+      </div>
+
+      <!-- Khung bản đồ bo góc lớn -->
+      <div class="liquid-glass p-2.5 sm:p-3.5 rounded-[36px] relative">
+        <div
+          id="map"
+          class="w-full h-[520px] sm:h-[600px] rounded-[28px] z-10 overflow-hidden"
+        ></div>
+
+        <!-- Chú giải nổi bằng kính mờ sáng -->
+        <div
+          class="mt-3 sm:mt-0 sm:absolute sm:bottom-8 sm:left-8 liquid-glass px-5 py-4 rounded-2xl z-[400] text-xs sm:text-sm space-y-2 pointer-events-auto"
+        >
+          <div
+            class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-1"
+          >
+            Chú giải các tuyến
+          </div>
+          <div
+            class="flex flex-wrap sm:flex-col gap-3 sm:gap-2 font-medium text-stone-700"
+          >
+            <div class="flex items-center gap-2.5">
+              <span
+                class="w-4 h-1.5 bg-[#0F4C81] rounded-full inline-block"
+              ></span>
+              Chặng chính: Hà Nội
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span
+                class="w-4 h-1.5 bg-[#6D4C7D] rounded-full inline-block"
+              ></span>
+              Mở rộng A: Tam Đảo
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span
+                class="w-4 h-1.5 bg-[#B86B35] rounded-full inline-block"
+              ></span>
+              Mở rộng B: Ninh Bình
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span
+                class="w-4 h-1.5 bg-[#1B6B53] rounded-full inline-block"
+              ></span>
+              Mở rộng C: Cát Bà – Hải Phòng
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span
+                class="w-4 h-1.5 bg-[#A63A50] rounded-full inline-block"
+              ></span>
+              Mở rộng D: Vịnh Hạ Long
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: LỊCH TRÌNH CHI TIẾT & BỘ SƯU TẬP ĐIỂM ĐẾN -->
+    <section
+      id="sec-itinerary"
+      class="max-w-7xl mx-auto px-4 sm:px-8 py-10 pb-24"
+    >
+      <div class="mb-8 px-1">
+        <span class="text-xs font-bold uppercase tracking-widest text-stone-400"
+          >Bước 04 • Chi tiết từng ngày</span
+        >
+        <h2
+          class="font-serif-display text-3xl sm:text-4xl font-semibold text-stone-900 mt-1"
+        >
+          Lịch trình & Điểm đến theo lựa chọn của bạn
+        </h2>
+        <p class="text-base text-stone-600 mt-1">
+          Bấm vào bất kỳ thẻ địa điểm nào bên dưới để tự động di chuyển bản đồ
+          đến đúng vị trí đó.
+        </p>
+      </div>
+
+      <div
+        id="timeline-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <!-- Render tự động bằng JavaScript -->
+      </div>
+    </section>
+
+    <!-- HỘP THOẠI (MODAL) THỐNG KÊ ĐOÀN & MỞ KHÓA DÀNH CHO BAN TỔ CHỨC -->
+    <div
+      id="dashboard-modal"
+      class="fixed inset-0 bg-stone-900/40 backdrop-blur-md z-[2000] hidden items-center justify-center p-4"
+    >
+      <div
+        class="bg-[#FBFBF9] border border-white rounded-[32px] max-w-4xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-2xl"
+      >
+        <!-- Đầu hộp thoại -->
+        <div
+          class="px-7 py-5 border-b border-stone-200/80 flex justify-between items-center bg-white"
+        >
+          <div>
+            <span
+              class="text-xs font-bold uppercase tracking-widest text-stone-400"
+              >Dữ liệu Thời gian thực</span
+            >
+            <h3
+              class="font-serif-display text-2xl font-semibold text-stone-900"
+            >
+              Bảng Tổng hợp Đăng ký Lộ trình
+            </h3>
+          </div>
+          <button
+            onclick="closeDashboardModal()"
+            class="w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center text-xl font-medium transition"
+          >
+            &times;
+          </button>
+        </div>
+
+        <!-- Thân hộp thoại -->
+        <div class="p-7 overflow-y-auto space-y-6 flex-1">
+          <!-- Thống kê số lượng từng chặng -->
+          <div>
+            <div
+              class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3"
+            >
+              Số lượng thành viên theo từng chặng (Cơ sở điều phối phương tiện)
+            </div>
+            <div
+              id="module-stats-bars"
+              class="grid grid-cols-1 sm:grid-cols-5 gap-3"
+            ></div>
+          </div>
+
+          <!-- Khu vực mở khóa tên thật dành cho Ban Tổ Chức -->
+          <div
+            class="bg-white border border-stone-200/90 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-sm"
+          >
+            <div>
+              <div
+                id="admin-status-title"
+                class="text-sm font-bold text-stone-900"
+              >
+                Chế độ Công khai (Tên thành viên đã được mã hóa ẩn danh)
+              </div>
+              <div class="text-xs text-stone-500 mt-0.5">
+                Ban Tổ Chức vui lòng nhập mã PIN quản trị để hiển thị họ tên đầy
+                đủ phục vụ đặt vé và lưu trú.
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <input
+                type="password"
+                id="admin-pin-input"
+                placeholder="Mã PIN..."
+                class="bg-stone-50 border border-stone-300 rounded-full px-4 py-2 text-sm text-stone-900 w-36 focus:outline-none focus:border-stone-900"
+              />
+              <button
+                onclick="unlockAdminNames()"
+                class="bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold px-5 py-2 rounded-full transition"
+              >
+                Xác thực
+              </button>
+              <button
+                onclick="fetchVotesFromDB()"
+                class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-sm font-medium px-3.5 py-2 rounded-full transition"
+                title="Làm mới dữ liệu"
+              >
+                Làm mới
+              </button>
+            </div>
+          </div>
+
+          <!-- Bảng danh sách đã đăng ký -->
+          <div
+            class="bg-white border border-stone-200/90 rounded-2xl overflow-hidden shadow-sm"
+          >
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr
+                    class="bg-stone-50 text-stone-500 text-xs font-bold uppercase tracking-wider border-b border-stone-200/80"
+                  >
+                    <th class="py-3.5 px-4">Mã</th>
+                    <th class="py-3.5 px-4">Thành viên</th>
+                    <th class="py-3.5 px-4">Lộ trình đăng ký</th>
+                    <th class="py-3.5 px-4">Ngân sách dự kiến</th>
+                    <th class="py-3.5 px-4">Ghi chú</th>
+                    <th class="py-3.5 px-4 text-right">Thời gian</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="votes-table-body"
+                  class="divide-y divide-stone-100"
+                ></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // =========================================================================
+      // CẤU HÌNH KẾT NỐI GOOGLE SHEETS (APPS SCRIPT WEBHOOK)
+      // =========================================================================
+      // Dán đường link Web App URL từ Google Apps Script của bạn vào giữa cặp dấu nháy kép:
+      const APPS_SCRIPT_URL = "";
+      const DEMO_ADMIN_PIN = "2026";
+
+      // =========================================================================
+      // 1. DỮ LIỆU 17 ĐỊA ĐIỂM KÈM HÌNH ẢNH THỰC TẾ & LỊCH TRÌNH
+      // =========================================================================
+      const modulesData = {
+        CORE: {
+          name: "Hà Nội",
+          price: 5985000,
+          color: "#0F4C81",
+          badge: "bg-[#0F4C81]/10 text-[#0F4C81]",
+          coords: [
+            {
+              id: "core-1",
+              name: "Cảng Hàng không Quốc tế Nội Bài",
+              lat: 21.2187,
+              lng: 105.8041,
+              time: "Ngày 0 (07/12)",
+              desc: "Điểm tập kết đón và tiễn đoàn từ TP.HCM, kết nối vào trung tâm qua trục cầu Nhật Tân.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Noi_Bai_International_Airport_Terminal_2_interior.jpg?width=600",
+            },
+            {
+              id: "core-2",
+              name: "Hồ Hoàn Kiếm & Phố Cổ (22 Hàng Buồm)",
+              lat: 21.0285,
+              lng: 105.8542,
+              time: "Ngày 0 & Ngày 2",
+              desc: "Khu vực lưu trú trung tâm của đoàn. Trải nghiệm xe buýt 2 tầng, khảo sát Trung tâm Văn hóa Nghệ thuật 22 Hàng Buồm và không gian Phúc Tân.",
+              img: "https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?auto=format&fit=crop&w=600&q=80",
+            },
+            {
+              id: "core-3",
+              name: "Ga Metro Cát Linh & Văn Miếu Quốc Tử Giám",
+              lat: 21.0281,
+              lng: 105.8276,
+              time: "Ngày 1 (08/12)",
+              desc: "Khảo sát thực tế mô hình giao thông công cộng đường sắt đô thị tuyến 2A và quần thể di sản Văn Miếu.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Cat_Linh_Station_2021.jpg?width=600",
+            },
+            {
+              id: "core-4",
+              name: "Bảo tàng Hà Nội & Công viên Nhân Chính",
+              lat: 21.0091,
+              lng: 105.7865,
+              time: "Ngày 1 & Ngày 2",
+              desc: "Tìm hiểu lịch sử quy hoạch Thủ đô qua các thời kỳ và khảo sát thiết kế không gian công cộng đương đại.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Hanoi_Museum_2010.jpg?width=600",
+            },
+            {
+              id: "core-5",
+              name: "Bảo tàng Lịch sử Quân sự Việt Nam (Mới)",
+              lat: 21.0035,
+              lng: 105.7412,
+              time: "Ngày 3 (10/12)",
+              desc: "Khảo sát công trình kiến trúc - cảnh quan quy mô lớn tại khu vực phát triển đô thị phía Tây Hà Nội.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Vietnam_Military_History_Museum_2024.jpg?width=600",
+            },
+          ],
+          days: [
+            {
+              day: "Ngày 0 • 07/12",
+              title: "TP.HCM – Hà Nội – Hoàn Kiếm",
+              module: "Chặng Chính",
+              spots: ["core-1", "core-2"],
+              items:
+                "Đón chuyến bay từ TP.HCM ra Hà Nội. Nhận phòng tại khu vực Hoàn Kiếm, trải nghiệm xe buýt 2 tầng ngắm phố phường và dùng bữa tối đặc sản.",
+            },
+            {
+              day: "Ngày 1 • 08/12",
+              title: "Quy hoạch Đô thị & Giao thông",
+              module: "Chặng Chính",
+              spots: ["core-4", "core-3"],
+              items:
+                "Buổi sáng làm việc tại Bảo tàng Hà Nội. Buổi chiều khảo sát tuyến Metro Cát Linh, Cầu Giấy, Văn Miếu và không gian nghệ thuật bờ sông Phúc Tân.",
+            },
+            {
+              day: "Ngày 2–3 • 09–10/12",
+              title: "Thực địa Chuyên sâu theo Nhóm",
+              module: "Chặng Chính",
+              spots: ["core-2", "core-5"],
+              items:
+                "Khảo sát thực địa tại 22 Hàng Buồm, Công viên Nhân Chính và Bảo tàng Lịch sử Quân sự mới tại Tây Mỗ. Tổng hợp dữ liệu và thảo luận nhóm.",
+            },
+            {
+              day: "Ngày 4 • 11/12",
+              title: "Tổng kết Chặng chính & Chuyển tiếp",
+              module: "Chặng Chính",
+              spots: ["core-2", "core-1"],
+              items:
+                "Buổi sáng họp tổng kết học thuật. Trưa trả phòng: các thành viên kết thúc sớm sẽ ra sân bay Nội Bài, nhóm mở rộng khởi hành đi Ninh Bình.",
+            },
+          ],
+        },
+        A: {
+          name: "Tam Đảo",
+          price: 1250000,
+          color: "#6D4C7D",
+          badge: "bg-[#6D4C7D]/10 text-[#6D4C7D]",
+          coords: [
+            {
+              id: "a-1",
+              name: "Thị trấn Tam Đảo & Nhà thờ Đá",
+              lat: 21.4561,
+              lng: 105.645,
+              time: "Ngày A1 (06/12)",
+              desc: "Di chuyển thẳng từ sân bay Nội Bài lên thị trấn Tam Đảo ở độ cao 900m. Tham quan Nhà thờ Đá cổ, quảng trường trung tâm và dùng tiệc nướng buổi tối.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Nh%C3%A0_th%E1%BB%9D_%C4%91%C3%A1_Tam_%C4%90%E1%BA%A3o.jpg?width=600",
+            },
+            {
+              id: "a-2",
+              name: "Cổng Trời, Quán Gió & Thác Bạc",
+              lat: 21.4612,
+              lng: 105.6415,
+              time: "Ngày A2 (07/12)",
+              desc: "Đón bình minh và săn mây tại Cổng Trời, thưởng thức cà phê Quán Gió và khám phá Thác Bạc trước khi về Hà Nội.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Tam_Dao_town.jpg?width=600",
+            },
+            {
+              id: "a-3",
+              name: "Tuyến kết nối Tam Đảo – Hoàn Kiếm",
+              lat: 21.0285,
+              lng: 105.8542,
+              time: "Trưa 07/12",
+              desc: "12:00 khởi hành bằng xe Limousine từ Tam Đảo về trung tâm quận Hoàn Kiếm để ghép vào lịch trình chung của đoàn.",
+              img: "https://images.unsplash.com/photo-1555921015-5532091f6026?auto=format&fit=crop&w=600&q=80",
+            },
+          ],
+          days: [
+            {
+              day: "Ngày A1 • 06/12",
+              title: "TP.HCM – Nội Bài – Cao nguyên Tam Đảo",
+              module: "Mở rộng A",
+              spots: ["a-1"],
+              items:
+                "Đón chuyến bay sáng sớm, xe đón thẳng từ Nội Bài lên Tam Đảo. Dạo bộ Nhà thờ Đá, Thác Bạc và thưởng thức tiệc nướng BBQ trong tiết trời se lạnh.",
+            },
+            {
+              day: "Ngày A2 • 07/12",
+              title: "Săn mây Tam Đảo – Hội quân Hà Nội",
+              module: "Mở rộng A",
+              spots: ["a-2", "a-3"],
+              items:
+                "Buổi sáng săn mây tại Cổng Trời và Quán Gió. Trưa lên xe Limousine về thẳng khu vực Hoàn Kiếm để hội quân cùng đoàn chính.",
+            },
+          ],
+        },
+        B: {
+          name: "Ninh Bình",
+          price: 2290000,
+          color: "#B86B35",
+          badge: "bg-[#B86B35]/10 text-[#B86B35]",
+          coords: [
+            {
+              id: "b-1",
+              name: "Phố cổ Hoa Lư (Ninh Bình)",
+              lat: 20.2645,
+              lng: 105.9685,
+              time: "Tối 11/12",
+              desc: "Không gian văn hóa tái hiện kiến trúc cổ bên hồ Kỳ Lân. Thưởng thức ẩm thực đặc sản dê núi Ninh Bình và dạo thuyền đèn lồng.",
+              img: "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=600&q=80",
+            },
+            {
+              id: "b-2",
+              name: "Quần thể Danh thắng Tràng An",
+              lat: 20.2506,
+              lng: 105.9367,
+              time: "Sáng 12/12",
+              desc: "Di sản Văn hóa và Thiên nhiên Thế giới UNESCO. Hành trình 3 giờ ngồi đò chèo tay xuyên qua hệ thống hang động ngập nước và thung lũng đá vôi.",
+              img: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=600&q=80",
+            },
+            {
+              id: "b-3",
+              name: "Đỉnh Hang Múa & Toàn cảnh Tam Cốc",
+              lat: 20.2319,
+              lng: 105.9369,
+              time: "Chiều 12/12",
+              desc: "Chinh phục gần 500 bậc đá lên đỉnh núi Ngọa Long để chiêm ngưỡng toàn cảnh dòng sông Ngô Đồng uốn lượn lúc hoàng hôn.",
+              img: "https://images.unsplash.com/photo-1557750255-c76072a7aad1?auto=format&fit=crop&w=600&q=80",
+            },
+          ],
+          days: [
+            {
+              day: "Ngày B1 • 11/12",
+              title: "Hà Nội – Cố đô Ninh Bình",
+              module: "Mở rộng B",
+              spots: ["b-1"],
+              items:
+                "13:00 khởi hành từ Hà Nội đi Ninh Bình. Nhận phòng Homestay nghỉ ngơi, buổi tối thưởng thức đặc sản dê núi và dạo Phố cổ Hoa Lư.",
+            },
+            {
+              day: "Ngày B2 • 12/12",
+              title: "Danh thắng Tràng An – Đỉnh Hang Múa",
+              module: "Mở rộng B",
+              spots: ["b-2", "b-3"],
+              items:
+                "Buổi sáng đi đò khám phá tuyến di sản Tràng An. Buổi chiều chinh phục đỉnh Hang Múa ngắm toàn cảnh Tam Cốc từ trên cao.",
+            },
+            {
+              day: "Ngày B3 • 13/12",
+              title: "Ninh Bình – Kết thúc / Chuyển tiếp Cát Bà",
+              module: "Mở rộng B",
+              spots: ["b-2"],
+              items:
+                "Dùng bữa sáng tại Homestay. Nhóm dừng tại Ninh Bình sẽ khởi hành về Nội Bài; nhóm đi tiếp sẽ lên xe Limousine đi Hải Phòng – Cát Bà lúc 09:30.",
+            },
+          ],
+        },
+        C: {
+          name: "Cát Bà",
+          price: 1760000,
+          color: "#1B6B53",
+          badge: "bg-[#1B6B53]/10 text-[#1B6B53]",
+          coords: [
+            {
+              id: "c-1",
+              name: "Nhà hát Lớn Hải Phòng & Trung tâm Đất Cảng",
+              lat: 20.8561,
+              lng: 106.6822,
+              time: "Trưa 13/12",
+              desc: "Điểm dừng chân trung chuyển từ Ninh Bình. Thưởng thức bánh đa cua Hải Phòng và tham quan kiến trúc Pháp cổ tại quảng trường Nhà hát Lớn.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Haiphong_Opera_House.jpg?width=600",
+            },
+            {
+              id: "c-2",
+              name: "Đảo Cát Bà & Vịnh Lan Hạ",
+              lat: 20.7278,
+              lng: 107.0481,
+              time: "Ngày 14/12",
+              desc: "Trải nghiệm du thuyền trên Vịnh Lan Hạ, tự tay chèo thuyền Kayak qua các đầm phá yên bình và thăm làng chài cổ Cái Bèo.",
+              img: "https://images.unsplash.com/photo-1540611025311-01df3cef54b5?auto=format&fit=crop&w=600&q=80",
+            },
+            {
+              id: "c-3",
+              name: "Vườn Quốc gia Cát Bà (Đỉnh Ngự Lâm)",
+              lat: 20.7995,
+              lng: 106.9997,
+              time: "Chiều 14/12",
+              desc: "Khu dự trữ sinh quyển thế giới. Hành trình đi bộ xuyên rừng Kim Giao lên đỉnh Ngự Lâm phóng tầm mắt ra toàn cảnh núi rừng đảo Cát Bà.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Cat_Ba_National_Park.jpg?width=600",
+            },
+          ],
+          days: [
+            {
+              day: "Ngày C1 • 13/12",
+              title: "Ninh Bình – Hải Phòng – Đảo Cát Bà",
+              module: "Mở rộng C",
+              spots: ["c-1", "c-2"],
+              items:
+                "Khởi hành từ Ninh Bình đi Hải Phòng, dừng chân ăn trưa tại khu vực Nhà hát Lớn. Buổi chiều di chuyển qua đảo Cát Bà và nhận phòng khách sạn.",
+            },
+            {
+              day: "Ngày C2 • 14/12",
+              title: "Du thuyền Vịnh Lan Hạ – VQG Cát Bà",
+              module: "Mở rộng C",
+              spots: ["c-2", "c-3"],
+              items:
+                "Dành trọn buổi sáng và trưa trên tàu khám phá Vịnh Lan Hạ, chèo Kayak và dùng bữa hải sản. Buổi chiều tham quan Vườn Quốc gia Cát Bà.",
+            },
+            {
+              day: "Ngày C3 • 15/12",
+              title: "Cát Bà – Cát Bi / Chuyển tiếp Hạ Long",
+              module: "Mở rộng C",
+              spots: ["c-2"],
+              items:
+                "Nhóm kết thúc hành trình tại Cát Bà sẽ di chuyển về sân bay Cát Bi (Hải Phòng). Nhóm đi tiếp chặng D sẽ ra bến phà Gia Luận sang vịnh Hạ Long.",
+            },
+          ],
+        },
+        D: {
+          name: "Hạ Long",
+          price: 1500000,
+          color: "#A63A50",
+          badge: "bg-[#A63A50]/10 text-[#A63A50]",
+          coords: [
+            {
+              id: "d-1",
+              name: "Tuyến Phà Xuyên Vịnh: Gia Luận – Tuần Châu",
+              lat: 20.838,
+              lng: 106.983,
+              time: "Sáng 15/12",
+              desc: "Hành trình phà biển kết nối trực tiếp đảo Cát Bà với cảng Tuần Châu (Hạ Long), đi xuyên qua vùng lõi các đảo đá vôi trên vịnh.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Tuan_Chau_Harbor.jpg?width=600",
+            },
+            {
+              id: "d-2",
+              name: "Vịnh Hạ Long & Bảo tàng Quảng Ninh",
+              lat: 20.9599,
+              lng: 107.0425,
+              time: "Ngày 16/12",
+              desc: "Tham quan Vịnh Hạ Long tuyến 2 (Hang Sửng Sốt – Đảo Titop) và khảo sát công trình kiến trúc Bảo tàng – Thư viện Quảng Ninh bên bờ vịnh.",
+              img: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=600&q=80",
+            },
+            {
+              id: "d-3",
+              name: "Cảng Hàng không Quốc tế Cát Bi",
+              lat: 20.8194,
+              lng: 106.7244,
+              time: "Chiều tối 16/12",
+              desc: "Di chuyển 45 phút qua tuyến cao tốc Hạ Long – Hải Phòng về sân bay Cát Bi để đáp chuyến bay tối về lại TP.HCM.",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Cat_Bi_International_Airport.jpg?width=600",
+            },
+          ],
+          days: [
+            {
+              day: "Ngày D1 • 15/12",
+              title: "Phà Xuyên Vịnh – Tuần Châu – Bãi Cháy",
+              module: "Mở rộng D",
+              spots: ["d-1", "d-2"],
+              items:
+                "Đi phà biển từ bến Gia Luận sang cảng Tuần Châu. Nhận phòng tại khu vực Bãi Cháy, tự do dạo biển và thưởng thức ẩm thực Hạ Long về đêm.",
+            },
+            {
+              day: "Ngày D2 • 16/12",
+              title: "Vịnh Hạ Long – Bảo tàng Quảng Ninh – TP.HCM",
+              module: "Mở rộng D",
+              spots: ["d-2", "d-3"],
+              items:
+                "Buổi sáng đi tàu tham quan Vịnh Hạ Long tuyến 2. Buổi chiều ghé thăm Bảo tàng Quảng Ninh trước khi lên xe Limousine ra sân bay Cát Bi về TP.HCM.",
+            },
+          ],
+        },
+      };
+
+      // =========================================================================
+      // 2. KHỞI TẠO BẢN ĐỒ SÁNG SANG TRỌNG (100% KHÔNG CẦN API KEY)
+      // =========================================================================
+      // Lớp mặc định: CartoDB Voyager (Tông màu kem sáng hiện đại như Apple Maps)
+      const voyagerLightLayer = L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        {
+          maxZoom: 19,
+          subdomains: "abcd",
+          attribution: "&copy; OpenStreetMap &copy; CARTO",
+        },
+      );
+
+      // Lớp 2: OpenStreetMap Tiêu chuẩn
+      const osmStandardLayer = L.tileLayer(
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors",
+        },
+      );
+
+      // Lớp 3: Ảnh vệ tinh Esri World Imagery
+      const esriSatelliteLayer = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 18,
+          attribution: "Tiles &copy; Esri",
+        },
+      );
+
+      const map = L.map("map", {
+        center: [20.85, 106.15],
+        zoom: 8,
+        layers: [voyagerLightLayer],
+        scrollWheelZoom: false, // Tránh bị kẹt cuộn trang khi người dùng lướt web dọc
+      });
+
+      // Bật zoom cuộn chuột khi người dùng click vào bản đồ
+      map.on("click", () => map.scrollWheelZoom.enable());
+      map.on("mouseout", () => map.scrollWheelZoom.disable());
+
+      L.control
+        .layers(
+          {
+            "Bản đồ Sáng Du lịch (Mặc định)": voyagerLightLayer,
+            "Bản đồ Hành chính Chi tiết": osmStandardLayer,
+            "Ảnh Vệ tinh Thực tế": esriSatelliteLayer,
+          },
+          null,
+          { position: "topright" },
+        )
+        .addTo(map);
+
+      let activeLayers = L.layerGroup().addTo(map);
+      let markerRegistry = {};
+      let currentBounds = [];
+
+      // Ảnh dự phòng tông sáng thanh lịch nếu mất kết nối ảnh ngoài
+      function createFallbackSVG(title, color) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
+        <rect width="600" height="360" fill="#F4F3EE"/>
+        <circle cx="300" cy="150" r="42" fill="${color}" fill-opacity="0.14"/>
+        <circle cx="300" cy="150" r="10" fill="${color}"/>
+        <text x="300" y="235" text-anchor="middle" fill="#141413" font-family="Georgia, serif" font-size="22" font-weight="bold">${title}</text>
+        <text x="300" y="265" text-anchor="middle" fill="#8C8B85" font-family="sans-serif" font-size="14">Điểm khảo sát Hành trình Bắc Bộ</text>
+      </svg>`;
+        return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+      }
+
+      // =========================================================================
+      // 3. LOGIC RÀNG BUỘC CHẶNG LIÊN TUYẾN (B <- C <- D)
+      // =========================================================================
+      function showChainNotice(msg) {
+        const box = document.getElementById("chain-notice");
+        if (!msg) {
+          box.classList.add("hidden");
+          return;
+        }
+        box.innerText = msg;
+        box.classList.remove("hidden");
+      }
+
+      function toggleModule(mod) {
+        const b = document.getElementById("mod-B");
+        const c = document.getElementById("mod-C");
+        const d = document.getElementById("mod-D");
+
+        if (mod === "D" && d.checked) {
+          if (!b.checked || !c.checked) {
+            showChainNotice(
+              "Lưu ý: Hệ thống đã tự động chọn thêm chặng Ninh Bình (B) và Cát Bà (C) để đảm bảo lộ trình di chuyển liền mạch tới Vịnh Hạ Long (D).",
+            );
+          }
+          c.checked = true;
+          b.checked = true;
+        }
+        if (mod === "C" && c.checked) {
+          if (!b.checked) {
+            showChainNotice(
+              "Lưu ý: Hệ thống đã tự động bật chặng Ninh Bình (B) do tuyến Hải Phòng – Cát Bà khởi hành nối tiếp từ Ninh Bình.",
+            );
+          }
+          b.checked = true;
+        }
+        if (mod === "B" && !b.checked) {
+          if (c.checked || d.checked) {
+            showChainNotice(
+              "Đã tắt chặng Cát Bà (C) và Hạ Long (D) do bạn đã bỏ chọn chặng trung chuyển Ninh Bình (B).",
+            );
+          }
+          c.checked = false;
+          d.checked = false;
+        }
+        if (mod === "C" && !c.checked) {
+          if (d.checked) {
+            showChainNotice(
+              "Đã tắt chặng Hạ Long (D) do tuyến phà Tuần Châu xuất phát nối tiếp từ đảo Cát Bà (C).",
+            );
+          }
+          d.checked = false;
+        }
+
+        renderApp();
+      }
+
+      function resetModules() {
+        ["A", "B", "C", "D"].forEach(
+          (k) => (document.getElementById("mod-" + k).checked = false),
+        );
+        showChainNotice("");
+        renderApp();
+      }
+
+      // =========================================================================
+      // 4. RENDER GIAO DIỆN, BẢN ĐỒ & TIMELINE
+      // =========================================================================
+      function findSpotById(spotId) {
+        for (const key of Object.keys(modulesData)) {
+          const found = modulesData[key].coords.find((c) => c.id === spotId);
+          if (found)
+            return {
+              ...found,
+              moduleKey: key,
+              color: modulesData[key].color,
+              badge: modulesData[key].badge,
+            };
+        }
+        return null;
+      }
+
+      function flyToSpot(spotId) {
+        const mapSection = document.getElementById("sec-map");
+        mapSection.scrollIntoView({ behavior: "smooth", block: "center" });
+        const m = markerRegistry[spotId];
+        if (m) {
+          setTimeout(() => {
+            map.flyTo(m.getLatLng(), 12, { duration: 1.1 });
+            setTimeout(() => m.openPopup(), 650);
+          }, 350);
+        }
+      }
+
+      function fitAllActiveBounds() {
+        if (currentBounds.length > 0) {
+          map.fitBounds(currentBounds, { padding: [55, 55] });
+        }
+      }
+
+      function renderApp() {
+        activeLayers.clearLayers();
+        markerRegistry = {};
+        currentBounds = [];
+
+        const selected = ["CORE"];
+        if (document.getElementById("mod-A").checked) selected.unshift("A");
+        if (document.getElementById("mod-B").checked) selected.push("B");
+        if (document.getElementById("mod-C").checked) selected.push("C");
+        if (document.getElementById("mod-D").checked) selected.push("D");
+
+        // Cập nhật trạng thái nổi bật cho các thẻ Module
+        ["A", "B", "C", "D"].forEach((k) => {
+          const card = document.getElementById("card-" + k);
+          const checked = document.getElementById("mod-" + k).checked;
+          if (checked) card.classList.add("active-card");
+          else card.classList.remove("active-card");
+        });
+
+        // Hiển thị các nhãn chặng trong bảng tóm tắt
+        document.getElementById("selected-pills").innerHTML = selected
+          .map((k) => {
+            const m = modulesData[k];
+            return `<span class="text-xs font-semibold px-2.5 py-1 rounded-full ${m.badge}">${m.name}</span>`;
+          })
+          .join("");
+
+        let totalCost = 0;
+        let timelineHTML = "";
+        let prevLastCoord = null;
+
+        selected.forEach((key) => {
+          const m = modulesData[key];
+          totalCost += m.price;
+
+          const latlngs = m.coords.map((c) => [c.lat, c.lng]);
+          if (prevLastCoord && key !== "CORE") {
+            L.polyline([prevLastCoord, latlngs[0]], {
+              color: m.color,
+              weight: 3,
+              dashArray: "5, 8",
+              opacity: 0.75,
+            }).addTo(activeLayers);
+          }
+          prevLastCoord = latlngs[latlngs.length - 1];
+          currentBounds.push(...latlngs);
+
+          // Vẽ đường đi chính
+          L.polyline(latlngs, {
+            color: m.color,
+            weight: key === "CORE" ? 4.5 : 3.5,
+            dashArray: key === "CORE" ? null : "8, 6",
+            opacity: 0.9,
+          }).addTo(activeLayers);
+
+          // Vẽ từng điểm kèm Popup ảnh lớn
+          m.coords.forEach((pt) => {
+            const fallbackUrl = createFallbackSVG(pt.name, m.color);
+            const popupHTML = `
+            <div>
+              <div class="relative h-44 w-full bg-stone-100 overflow-hidden">
+                <img src="${pt.img}" alt="${pt.name}"
+                     onerror="this.onerror=null;this.src='${fallbackUrl}';"
+                     class="w-full h-full object-cover" />
+                <span class="absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-stone-900 shadow-sm">
+                  ${pt.time}
+                </span>
+              </div>
+              <div class="p-4 space-y-2">
+                <div class="font-serif-display font-bold text-lg text-stone-900 leading-snug">${pt.name}</div>
+                <p class="text-xs text-stone-600 leading-relaxed">${pt.desc}</p>
+                <div class="pt-2.5 flex justify-between items-center border-t border-stone-100 text-xs font-medium text-stone-400">
+                  <span class="tabular-nums">${pt.lat.toFixed(4)}, ${pt.lng.toFixed(4)}</span>
+                  <a href="https://www.google.com/maps?q=${pt.lat},${pt.lng}" target="_blank" class="text-stone-900 font-semibold hover:underline">Mở Google Maps ↗</a>
+                </div>
+              </div>
+            </div>
+          `;
+
+            const marker = L.circleMarker([pt.lat, pt.lng], {
+              radius: 8,
+              fillColor: m.color,
+              color: "#FFFFFF",
+              weight: 3,
+              fillOpacity: 1,
+            })
+              .bindPopup(popupHTML)
+              .addTo(activeLayers);
+
+            markerRegistry[pt.id] = marker;
+          });
+
+          // Tạo thẻ Lịch trình (Editorial Cards)
+          m.days.forEach((d) => {
+            const spotButtons = (d.spots || [])
+              .map((sid) => {
+                const sp = findSpotById(sid);
+                if (!sp) return "";
+                const fb = createFallbackSVG(sp.name, sp.color);
+                return `
+              <button onclick="flyToSpot('${sp.id}')" class="group flex items-center gap-3.5 w-full text-left p-2.5 rounded-2xl bg-stone-50/90 hover:bg-stone-100 border border-stone-200/70 transition">
+                <img src="${sp.img}" onerror="this.onerror=null;this.src='${fb}';" class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm" />
+                <div class="min-w-0 flex-1">
+                  <div class="text-sm font-bold text-stone-900 group-hover:text-[#0F4C81] truncate transition">${sp.name}</div>
+                  <div class="text-xs text-stone-500 line-clamp-1 mt-0.5">${sp.desc}</div>
+                </div>
+                <span class="text-xs font-semibold text-stone-400 group-hover:text-stone-900 pr-1">Xem ↗</span>
+              </button>
+            `;
+              })
+              .join("");
+
+            timelineHTML += `
+            <div class="liquid-glass rounded-[28px] p-6 flex flex-col justify-between space-y-5 hover:shadow-lg transition">
+              <div>
+                <div class="flex justify-between items-center mb-3">
+                  <span class="text-xs font-bold uppercase tracking-wider text-stone-400">${d.day}</span>
+                  <span class="text-xs font-semibold px-3 py-1 rounded-full ${m.badge}">${d.module}</span>
+                </div>
+                <h4 class="font-serif-display text-xl font-bold text-stone-900 mb-2">${d.title}</h4>
+                <p class="text-sm text-stone-600 leading-relaxed">${d.items}</p>
+              </div>
+              <div class="space-y-2 pt-3 border-t border-stone-200/60">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-stone-400">Điểm khảo sát trong ngày:</div>
+                ${spotButtons}
+              </div>
+            </div>
+          `;
+          });
+        });
+
+        fitAllActiveBounds();
+
+        // Cập nhật tổng số ngày và chi phí
+        const startDay = selected.includes("A") ? "06/12" : "07/12";
+        let endDay = "11/12",
+          numDays = 5;
+        if (selected.includes("B")) {
+          endDay = "13/12";
+          numDays = 7;
+        }
+        if (selected.includes("C")) {
+          endDay = "15/12";
+          numDays = 9;
+        }
+        if (selected.includes("D")) {
+          endDay = "16/12";
+          numDays = 10;
+        }
+        if (selected.includes("A")) numDays += 1;
+
+        const buffer = Math.round(totalCost * 0.1);
+        document.getElementById("total-days").innerText =
+          `${numDays} ngày (${startDay} – ${endDay})`;
+        document.getElementById("base-cost").innerText =
+          totalCost.toLocaleString("vi-VN") + "₫";
+        document.getElementById("buffer-cost").innerText =
+          buffer.toLocaleString("vi-VN") + "₫";
+        document.getElementById("final-cost").innerText =
+          (totalCost + buffer).toLocaleString("vi-VN") + "₫";
+        document.getElementById("timeline-grid").innerHTML = timelineHTML;
+      }
+
+      // =========================================================================
+      // 5. LƯU TRỮ ĐĂNG KÝ & BẢO MẬT ẨN DANH TÊN THÀNH VIÊN
+      // =========================================================================
+      let isAdminUnlocked = false;
+      let currentAdminPin = "";
+
+      function maskName(fullName) {
+        if (!fullName) return "Thành viên ẩn danh";
+        const parts = fullName.trim().split(/\s+/);
+        return parts
+          .map((p) => {
+            if (p.length <= 2) return p[0] + "*";
+            return p.substring(0, 2) + "***";
+          })
+          .join(" ");
+      }
+
+      function getLocalVotes() {
+        const raw = localStorage.getItem("northern_trip_votes_2026");
+        if (!raw) {
+          const sample = [
+            {
+              id: "#VN-104",
+              realName: "Nguyễn Minh Quân (Mẫu)",
+              maskedName: "Ng*** Mi*** Qu***",
+              modules: ["CORE", "A", "B", "C", "D"],
+              days: "11 ngày (06/12 – 16/12)",
+              totalCost: "14.063.500₫",
+              note: "Tham gia trọn vẹn hành trình",
+              timestamp: "Hôm nay",
+            },
+          ];
+          localStorage.setItem(
+            "northern_trip_votes_2026",
+            JSON.stringify(sample),
+          );
+          return sample;
+        }
+        return JSON.parse(raw);
+      }
+
+      async function submitVote() {
+        const nameInput = document.getElementById("member-name");
+        const noteInput = document.getElementById("member-note");
+        const statusEl = document.getElementById("vote-status");
+        const btn = document.getElementById("btn-submit-vote");
+
+        const realName = nameInput.value.trim();
+        if (!realName) {
+          statusEl.className =
+            "p-4 rounded-2xl text-sm font-medium text-center bg-rose-50 text-rose-800 border border-rose-200";
+          statusEl.innerText =
+            "Vui lòng nhập họ và tên của bạn trước khi xác nhận.";
+          statusEl.classList.remove("hidden");
+          nameInput.focus();
+          return;
+        }
+
+        const mods = ["CORE"];
+        ["A", "B", "C", "D"].forEach((k) => {
+          if (document.getElementById("mod-" + k).checked) mods.push(k);
+        });
+
+        const votePayload = {
+          id: "#VN-" + Math.floor(100 + Math.random() * 900),
+          realName: realName,
+          maskedName: maskName(realName),
+          modules: mods,
+          days: document.getElementById("total-days").innerText,
+          totalCost: document.getElementById("final-cost").innerText,
+          note: noteInput.value.trim() || "—",
+          timestamp: new Date().toLocaleString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+          }),
+        };
+
+        btn.disabled = true;
+        btn.innerHTML = `<span>Đang ghi nhận...</span>`;
+
+        const localVotes = getLocalVotes();
+        localVotes.unshift(votePayload);
+        localStorage.setItem(
+          "northern_trip_votes_2026",
+          JSON.stringify(localVotes),
+        );
+
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("https://")) {
+          try {
+            await fetch(APPS_SCRIPT_URL, {
+              method: "POST",
+              mode: "no-cors",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify(votePayload),
+            });
+          } catch (err) {
+            console.warn("Đã lưu tại bộ nhớ trình duyệt:", err);
+          }
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = `<span>Xác nhận Lộ trình này</span>`;
+        nameInput.value = "";
+        noteInput.value = "";
+
+        statusEl.className =
+          "p-4 rounded-2xl text-sm font-medium text-center bg-emerald-50 text-emerald-900 border border-emerald-200";
+        statusEl.innerText = `Đã ghi nhận thành công mã ${votePayload.id} (${votePayload.maskedName}) — Lộ trình: ${mods.join(" + ")}`;
+        statusEl.classList.remove("hidden");
+
+        updateVoteBadgeCount();
+      }
+
+      async function fetchVotesFromDB() {
+        let votes = getLocalVotes();
+
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("https://")) {
+          try {
+            const url = isAdminUnlocked
+              ? `${APPS_SCRIPT_URL}?pin=${encodeURIComponent(currentAdminPin)}`
+              : APPS_SCRIPT_URL;
+            const res = await fetch(url);
+            const data = await res.json();
+            if (Array.isArray(data.votes)) {
+              votes = data.votes;
+              if (data.adminUnlocked === false && isAdminUnlocked) {
+                alert("Mã PIN quản trị không chính xác.");
+                isAdminUnlocked = false;
+              }
+            }
+          } catch (e) {
+            console.warn("Hiển thị dữ liệu bộ nhớ máy:", e);
+          }
+        }
+
+        renderDashboard(votes);
+      }
+
+      function renderDashboard(votes) {
+        document.getElementById("header-vote-count").innerText = votes.length;
+
+        const counts = { CORE: 0, A: 0, B: 0, C: 0, D: 0 };
+        votes.forEach((v) => {
+          (v.modules || []).forEach((m) => {
+            if (counts[m] !== undefined) counts[m]++;
+          });
+        });
+
+        const meta = [
+          { k: "CORE", label: "Hà Nội (Chính)", color: "bg-[#0F4C81]" },
+          { k: "A", label: "A: Tam Đảo", color: "bg-[#6D4C7D]" },
+          { k: "B", label: "B: Ninh Bình", color: "bg-[#B86B35]" },
+          { k: "C", label: "C: Cát Bà", color: "bg-[#1B6B53]" },
+          { k: "D", label: "D: Hạ Long", color: "bg-[#A63A50]" },
+        ];
+
+        const totalVoters = Math.max(votes.length, 1);
+        document.getElementById("module-stats-bars").innerHTML = meta
+          .map((item) => {
+            const c = counts[item.k];
+            const pct = Math.round((c / totalVoters) * 100);
+            let vehicleHint = "Chưa có đăng ký";
+            if (c > 0 && c <= 6) vehicleHint = "Đề xuất: Xe 7 chỗ";
+            else if (c >= 7 && c <= 15)
+              vehicleHint = "Đề xuất: Limousine / 16 chỗ";
+            else if (c >= 16) vehicleHint = "Đề xuất: Xe 29 chỗ";
+
+            return `
+          <div class="p-4 rounded-2xl bg-white border border-stone-200/90 space-y-2 shadow-sm">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-stone-700">${item.label}</span>
+              <span class="font-bold text-stone-900 tabular-nums">${c} người</span>
+            </div>
+            <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div class="${item.color} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            </div>
+            <div class="text-[11px] text-stone-500">${vehicleHint}</div>
+          </div>
+        `;
+          })
+          .join("");
+
+        const tbody = document.getElementById("votes-table-body");
+        tbody.innerHTML = votes
+          .map((v) => {
+            const displayedName = isAdminUnlocked
+              ? `<span class="text-stone-900 font-bold">${v.realName || v.maskedName}</span>`
+              : `<span class="text-stone-600 font-medium">${v.maskedName || maskName(v.realName)}</span>`;
+
+            const modBadges = (v.modules || [])
+              .map((m) => {
+                return `<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-stone-100 text-stone-700 border border-stone-200">${m}</span>`;
+              })
+              .join(" ");
+
+            return `
+          <tr class="hover:bg-stone-50/80 transition">
+            <td class="py-3.5 px-4 text-xs font-semibold text-stone-400 tabular-nums">${v.id || "—"}</td>
+            <td class="py-3.5 px-4">${displayedName}</td>
+            <td class="py-3.5 px-4 space-x-1">${modBadges}</td>
+            <td class="py-3.5 px-4 font-bold text-stone-900 tabular-nums">${v.totalCost || ""}</td>
+            <td class="py-3.5 px-4 text-stone-500">${v.note || "—"}</td>
+            <td class="py-3.5 px-4 text-right text-xs text-stone-400 tabular-nums">${v.timestamp || ""}</td>
+          </tr>
+        `;
+          })
+          .join("");
+      }
+
+      function unlockAdminNames() {
+        const pin = document.getElementById("admin-pin-input").value.trim();
+        if (!pin) return;
+
+        if (!APPS_SCRIPT_URL) {
+          if (pin === DEMO_ADMIN_PIN) {
+            isAdminUnlocked = true;
+            document.getElementById("admin-status-title").innerText =
+              "Chế độ Ban Tổ Chức: Đã hiển thị họ tên đầy đủ của thành viên";
+            document.getElementById("admin-status-title").className =
+              "text-sm font-bold text-emerald-700";
+            fetchVotesFromDB();
+          } else {
+            alert(
+              "Mã PIN chưa chính xác (Mã PIN mặc định để thử nghiệm là: 2026).",
+            );
+          }
+          return;
+        }
+
+        currentAdminPin = pin;
+        isAdminUnlocked = true;
+        document.getElementById("admin-status-title").innerText =
+          "Chế độ Ban Tổ Chức: Đã giải mã họ tên từ Google Sheets";
+        document.getElementById("admin-status-title").className =
+          "text-sm font-bold text-emerald-700";
+        fetchVotesFromDB();
+      }
+
+      function openDashboardModal() {
+        const modal = document.getElementById("dashboard-modal");
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        fetchVotesFromDB();
+      }
+
+      function closeDashboardModal() {
+        const modal = document.getElementById("dashboard-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+
+      function updateVoteBadgeCount() {
+        const votes = getLocalVotes();
+        document.getElementById("header-vote-count").innerText = votes.length;
+      }
+
+      renderApp();
+      updateVoteBadgeCount();
+    </script>
+  </body>
+</html>
